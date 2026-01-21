@@ -22,13 +22,18 @@ import numpy as np
 from datetime import datetime, timedelta
 import random
 import json
+from pathlib import Path
+
+from config.logging_config import get_logger, LoggerMixin
 
 # Ensure reproducibility for demonstrations
 np.random.seed(42)
 random.seed(42)
 
+logger = get_logger(__name__)
 
-class MRODataGenerator:
+
+class MRODataGenerator(LoggerMixin):
     """
     Orchestrates synthetic data generation for Aviation MRO operations.
     
@@ -43,6 +48,12 @@ class MRODataGenerator:
         self.num_suppliers = num_suppliers
         self.simulation_days = simulation_days
         self.base_date = datetime.now() - timedelta(days=simulation_days)
+        
+        self.logger.info(
+            f"Initializing MRO Data Generator: "
+            f"{num_components} components, {num_suppliers} suppliers, "
+            f"{simulation_days} days simulation period"
+        )
         
         # Aircraft component taxonomy (simplified)
         self.component_categories = {
@@ -75,6 +86,8 @@ class MRODataGenerator:
         Returns:
             pd.DataFrame: Inventory master with 5,000+ rows
         """
+        
+        self.logger.info("Starting inventory master data generation")
         
         components = []
         
@@ -131,6 +144,14 @@ class MRODataGenerator:
             axis=1
         )
         
+        critical_count = len(df[df['risk_flag'] == 'Critical'])
+        warning_count = len(df[df['risk_flag'] == 'Warning'])
+        
+        self.logger.info(
+            f"Inventory generation complete: {len(df)} components "
+            f"({critical_count} critical, {warning_count} warning)"
+        )
+        
         return df
     
     def generate_supplier_network(self):
@@ -145,6 +166,8 @@ class MRODataGenerator:
         Returns:
             pd.DataFrame: Supplier network with reliability metrics
         """
+        
+        self.logger.info("Starting supplier network data generation")
         
         suppliers = []
         
@@ -178,7 +201,17 @@ class MRODataGenerator:
             
             suppliers.append(supplier)
         
-        return pd.DataFrame(suppliers)
+        df = pd.DataFrame(suppliers)
+        
+        high_risk_count = len(df[df['risk_exposure'] == 'High'])
+        avg_otd = df['on_time_delivery_pct'].mean()
+        
+        self.logger.info(
+            f"Supplier network generation complete: {len(df)} suppliers "
+            f"({high_risk_count} high-risk, avg OTD: {avg_otd:.1f}%)"
+        )
+        
+        return df
     
     def generate_risk_feed(self):
         """
@@ -193,6 +226,8 @@ class MRODataGenerator:
             pd.DataFrame: Time-series risk events with severity scoring
         """
         
+        self.logger.info("Starting risk event feed generation")
+        
         risk_events = []
         event_types = {
             'Port Congestion': {'impact': 'High', 'duration_days': (7, 21)},
@@ -206,7 +241,7 @@ class MRODataGenerator:
         # Generate 50-100 events over simulation period
         num_events = random.randint(50, 100)
         
-        for _ in range(num_events):
+        for idx in range(num_events):
             event_type = random.choice(list(event_types.keys()))
             event_config = event_types[event_type]
             
@@ -218,7 +253,7 @@ class MRODataGenerator:
             num_affected_suppliers = random.randint(5, 30)
             
             event = {
-                'event_id': f"RISK-{_:04d}",
+                'event_id': f"RISK-{idx:04d}",
                 'event_date': event_date.strftime('%Y-%m-%d'),
                 'event_type': event_type,
                 'severity': event_config['impact'],
@@ -234,6 +269,13 @@ class MRODataGenerator:
         
         df = pd.DataFrame(risk_events)
         df = df.sort_values('event_date').reset_index(drop=True)
+        
+        critical_count = len(df[df['severity'] == 'Critical'])
+        
+        self.logger.info(
+            f"Risk event feed generation complete: {len(df)} events "
+            f"({critical_count} critical)"
+        )
         
         return df
     
@@ -282,24 +324,26 @@ class MRODataGenerator:
         Returns:
             dict: Summary statistics for generated datasets
         """
-        import os
-        os.makedirs(output_dir, exist_ok=True)
         
-        print("🚀 Sky-Guard Data Generation Pipeline Initiated...")
-        print("=" * 60)
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        self.logger.info("=" * 70)
+        self.logger.info("Sky-Guard Data Generation Pipeline Initiated")
+        self.logger.info("=" * 70)
         
         # Generate datasets
-        print("📦 Generating Inventory Master Data...")
         inventory = self.generate_inventory_master()
-        inventory.to_csv(f'{output_dir}/inventory_master.csv', index=False)
+        inventory.to_csv(output_path / 'inventory_master.csv', index=False)
+        self.logger.info(f"Saved: {output_path / 'inventory_master.csv'}")
         
-        print("🏭 Generating Supplier Network Data...")
         suppliers = self.generate_supplier_network()
-        suppliers.to_csv(f'{output_dir}/supplier_network.csv', index=False)
+        suppliers.to_csv(output_path / 'supplier_network.csv', index=False)
+        self.logger.info(f"Saved: {output_path / 'supplier_network.csv'}")
         
-        print("⚠️  Generating Risk Event Feed...")
         risks = self.generate_risk_feed()
-        risks.to_csv(f'{output_dir}/risk_events.csv', index=False)
+        risks.to_csv(output_path / 'risk_events.csv', index=False)
+        self.logger.info(f"Saved: {output_path / 'risk_events.csv'}")
         
         # Generate summary statistics
         summary = {
@@ -323,34 +367,37 @@ class MRODataGenerator:
         }
         
         # Save summary
-        with open(f'{output_dir}/generation_summary.json', 'w') as f:
+        summary_path = output_path / 'generation_summary.json'
+        with open(summary_path, 'w') as f:
             json.dump(summary, f, indent=2)
         
-        print("\n✅ Data Generation Complete!")
-        print("=" * 60)
-        print(f"📊 Summary:")
-        print(f"   • Inventory Components: {summary['inventory']['total_components']:,}")
-        print(f"   • At-Risk Components: {summary['inventory']['at_risk_components']:,}")
-        print(f"   • Suppliers: {summary['suppliers']['total_suppliers']:,}")
-        print(f"   • Risk Events: {summary['risks']['total_events']:,}")
-        print(f"\n💾 Files saved to: {output_dir}/")
+        self.logger.info(f"Saved: {summary_path}")
+        self.logger.info("=" * 70)
+        self.logger.info("Data Generation Complete")
+        self.logger.info(f"Components: {summary['inventory']['total_components']:,}")
+        self.logger.info(f"At-Risk: {summary['inventory']['at_risk_components']:,}")
+        self.logger.info(f"Suppliers: {summary['suppliers']['total_suppliers']:,}")
+        self.logger.info(f"Risk Events: {summary['risks']['total_events']:,}")
+        self.logger.info("=" * 70)
         
         return summary
 
 
-# Execution Entry Point
-if __name__ == "__main__":
+def main():
+    """CLI entry point for data generation."""
     generator = MRODataGenerator(
         num_components=5000,
         num_suppliers=150,
         simulation_days=90
     )
     
-    summary = generator.generate_all_datasets()
+    generator.generate_all_datasets()
     
-    print("\n" + "=" * 60)
-    print("🎯 Next Steps:")
-    print("   1. Review generated datasets in data/raw/")
-    print("   2. Proceed to Phase 2: Anomaly Detection Engine")
-    print("   3. Configure OpenRouter API for AI reasoning layer")
-    print("=" * 60)
+    logger.info("Next Steps:")
+    logger.info("  1. Review generated datasets in data/raw/")
+    logger.info("  2. Run validation: skyguard-validate")
+    logger.info("  3. Proceed to Phase 2: Anomaly Detection Engine")
+
+
+if __name__ == "__main__":
+    main()
