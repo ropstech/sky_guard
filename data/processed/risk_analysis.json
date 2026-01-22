@@ -1,0 +1,180 @@
+{
+  "summary": {
+    "analysis_timestamp": "2026-01-22 08:57:37",
+    "total_components_analyzed": 5000,
+    "risk_distribution": {
+      "high_risk": 2575,
+      "medium_risk": 1994,
+      "low_risk": 431
+    },
+    "financial_metrics": {
+      "total_exposure_usd": 49112526775.0,
+      "avg_exposure_per_high_risk_component": 19072825.932038836
+    },
+    "top_risk_categories": {
+      "Landing Gear": 496,
+      "Engine": 482,
+      "Avionics": 397,
+      "Hydraulics": 371,
+      "Electrical": 330
+    },
+    "top_risk_regions": {
+      "Middle East": 883,
+      "Asia-Pacific": 652,
+      "North America": 581,
+      "Europe": 459
+    }
+  },
+  "top_risks": [
+    {
+      "part_number": "PN-ENG-04068",
+      "description": "Engine Component - Series C",
+      "category": "Engine",
+      "criticality": "Critical",
+      "current_stock": 22,
+      "safety_stock": 25,
+      "lead_time_days": 88.0,
+      "supplier_id": "SUP-0131",
+      "region": "Middle East",
+      "risk_exposure": "High",
+      "composite_risk_score": 100.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 46941136.0
+    },
+    {
+      "part_number": "PN-ENG-02829",
+      "description": "Engine Component - Series X",
+      "category": "Engine",
+      "criticality": "Critical",
+      "current_stock": 43,
+      "safety_stock": 37,
+      "lead_time_days": 87.0,
+      "supplier_id": "SUP-0002",
+      "region": "North America",
+      "risk_exposure": "Medium",
+      "composite_risk_score": 93.50000000000001,
+      "risk_level": "High",
+      "financial_exposure_usd": 46281738.0
+    },
+    {
+      "part_number": "PN-LAN-00131",
+      "description": "Landing Gear Component - Series X",
+      "category": "Landing Gear",
+      "criticality": "Critical",
+      "current_stock": 26,
+      "safety_stock": 30,
+      "lead_time_days": 88.0,
+      "supplier_id": "SUP-0079",
+      "region": "Middle East",
+      "risk_exposure": "High",
+      "composite_risk_score": 100.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 46228248.0
+    },
+    {
+      "part_number": "PN-ENG-01363",
+      "description": "Engine Component - Series B",
+      "category": "Engine",
+      "criticality": "Critical",
+      "current_stock": 63,
+      "safety_stock": 42,
+      "lead_time_days": 87.0,
+      "supplier_id": "SUP-0115",
+      "region": "Asia-Pacific",
+      "risk_exposure": "Medium",
+      "composite_risk_score": 66.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 46018128.0
+    },
+    {
+      "part_number": "PN-LAN-04038",
+      "description": "Landing Gear Component - Series C",
+      "category": "Landing Gear",
+      "criticality": "Critical",
+      "current_stock": 10,
+      "safety_stock": 24,
+      "lead_time_days": 86.0,
+      "supplier_id": "SUP-0138",
+      "region": "Middle East",
+      "risk_exposure": "High",
+      "composite_risk_score": 100.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 45844278.0
+    },
+    {
+      "part_number": "PN-LAN-04092",
+      "description": "Landing Gear Component - Series A",
+      "category": "Landing Gear",
+      "criticality": "Critical",
+      "current_stock": 18,
+      "safety_stock": 27,
+      "lead_time_days": 87.0,
+      "supplier_id": "SUP-0067",
+      "region": "Middle East",
+      "risk_exposure": "High",
+      "composite_risk_score": 100.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 45792972.0
+    },
+    {
+      "part_number": "PN-ENG-02565",
+      "description": "Engine Component - Series X",
+      "category": "Engine",
+      "criticality": "Critical",
+      "current_stock": 18,
+      "safety_stock": 21,
+      "lead_time_days": 89.0,
+      "supplier_id": "SUP-0144",
+      "region": "North America",
+      "risk_exposure": "Low",
+      "composite_risk_score": 85.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 45727844.0
+    },
+    {
+      "part_number": "PN-LAN-00750",
+      "description": "Landing Gear Component - Series C",
+      "category": "Landing Gear",
+      "criticality": "Critical",
+      "current_stock": 23,
+      "safety_stock": 27,
+      "lead_time_days": 88.0,
+      "supplier_id": "SUP-0035",
+      "region": "North America",
+      "risk_exposure": "Low",
+      "composite_risk_score": 85.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 45617792.0
+    },
+    {
+      "part_number": "PN-ENG-04927",
+      "description": "Engine Component - Series X",
+      "category": "Engine",
+      "criticality": "Critical",
+      "current_stock": 35,
+      "safety_stock": 30,
+      "lead_time_days": 88.0,
+      "supplier_id": "SUP-0024",
+      "region": "Europe",
+      "risk_exposure": "Low",
+      "composite_risk_score": 85.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 45516768.0
+    },
+    {
+      "part_number": "PN-LAN-01824",
+      "description": "Landing Gear Component - Series B",
+      "category": "Landing Gear",
+      "criticality": "Critical",
+      "current_stock": 18,
+      "safety_stock": 31,
+      "lead_time_days": 85.0,
+      "supplier_id": "SUP-0065",
+      "region": "North America",
+      "risk_exposure": "Low",
+      "composite_risk_score": 95.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 45409890.0
+    }
+  ]
+}
