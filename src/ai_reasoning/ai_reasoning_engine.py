@@ -26,6 +26,7 @@ Output:
 
 import json
 import os
+import re
 from pathlib import Path
 from typing import Dict, List, Optional
 import requests
@@ -49,7 +50,7 @@ class AIReasoningEngine:
         
         # Load API credentials
         self.api_key = os.getenv('OPENROUTER_API_KEY')
-        self.model = os.getenv('OPENROUTER_MODEL')
+        self.model = os.getenv('OPENROUTER_MODEL', 'deepseek/deepseek-chat')
         
         if not self.api_key:
             raise ValueError(
@@ -139,21 +140,96 @@ Respond ONLY with valid JSON, no additional text."""
 
         return prompt
     
+    def _parse_llm_json(self, content: str) -> Dict:
+        """
+        Parse JSON from LLM response with multiple fallback strategies.
+        
+        Strategy:
+        1. Try direct parsing
+        2. Remove markdown code blocks
+        3. Fix common JSON errors (missing quotes on keys)
+        4. If all fails, log raw content and raise
+        """
+        
+        # Remove leading/trailing whitespace
+        content = content.strip()
+        
+        # Strategy 1: Direct parsing
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError:
+            pass
+        
+        # Strategy 2: Remove markdown code blocks
+        if content.startswith('```'):
+            # Remove opening markdown
+            content = re.sub(r'^```(?:json)?\s*', '', content)
+            # Remove closing markdown
+            content = re.sub(r'\s*```$', '', content)
+            content = content.strip()
+            
+            try:
+                return json.loads(content)
+            except json.JSONDecodeError:
+                pass
+        
+        # Strategy 3: Fix common JSON errors
+        # Fix unquoted keys (e.g., implementation_time_days: 45 → "implementation_time_days": 45)
+        content_fixed = re.sub(
+            r'(\n\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:',
+            r'\1"\2":',
+            content
+        )
+        
+        try:
+            return json.loads(content_fixed)
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON parsing failed after fixes. Error: {e}")
+            logger.warning(f"Raw content (first 500 chars): {content[:500]}")
+            raise
+    
+    def _create_fallback_recommendation(self) -> Dict:
+        """
+        Create a fallback recommendation when LLM parsing fails.
+        
+        This prevents the entire pipeline from crashing due to one bad response.
+        In production, this would trigger an alert for manual review.
+        """
+        logger.warning("Using fallback recommendation due to parsing error")
+        
+        return {
+            "root_cause": "Unable to parse LLM response - manual review required",
+            "mitigation_options": [
+                {
+                    "option": "Manual Analysis Required",
+                    "description": "LLM response could not be parsed. Please review component manually.",
+                    "estimated_cost_usd": 0,
+                    "implementation_time_days": 0,
+                    "risk_reduction_pct": 0
+                }
+            ],
+            "recommended_action": "Manual review required - LLM parsing error",
+            "confidence_level": "Low",
+            "expected_roi": "N/A - requires manual analysis",
+            "parsing_error": True
+        }
+    
     def call_llm(self, prompt: str) -> Dict:
         """
-        Make API call to OpenRouter.
+        Make API call to OpenRouter with robust error handling.
         
         Best Practices:
         - Timeout handling
         - Rate limiting consideration
         - Error logging
         - Response validation
+        - Fallback parsing strategies for malformed JSON
         """
         
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://sky-guard.example.com",  # Optional: for analytics
+            "HTTP-Referer": "https://sky-guard.example.com",
         }
         
         payload = {
@@ -164,8 +240,8 @@ Respond ONLY with valid JSON, no additional text."""
                     "content": prompt
                 }
             ],
-            "temperature": 0.3,  # Lower = more consistent/conservative recommendations
-            "max_tokens": 1000,
+            "temperature": 0.3,
+            "max_tokens": 1500,
         }
         
         try:
@@ -185,17 +261,8 @@ Respond ONLY with valid JSON, no additional text."""
             # Extract content from response
             content = result['choices'][0]['message']['content']
             
-            # Parse JSON from response
-            # Remove markdown code blocks if present
-            content = content.strip()
-            if content.startswith('```json'):
-                content = content[7:]  # Remove ```json
-            if content.startswith('```'):
-                content = content[3:]  # Remove ```
-            if content.endswith('```'):
-                content = content[:-3]  # Remove trailing ```
-            
-            recommendation = json.loads(content.strip())
+            # Clean and parse JSON with multiple fallback strategies
+            recommendation = self._parse_llm_json(content)
             
             logger.debug("  ✓ API call successful")
             
@@ -205,9 +272,8 @@ Respond ONLY with valid JSON, no additional text."""
             logger.error(f"API request failed: {e}")
             raise
         except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse LLM response as JSON: {e}")
-            logger.error(f"Raw response: {content}")
-            raise
+            logger.error(f"Failed to parse LLM response: {e}")
+            return self._create_fallback_recommendation()
     
     def generate_recommendations(self, max_components: int = 5):
         """
@@ -336,7 +402,7 @@ def main():
     """Entry point for AI reasoning."""
     try:
         engine = AIReasoningEngine()
-        engine.run_analysis(max_components=5)  # Limit to 5 for cost control
+        engine.run_analysis(max_components=5)
     except ValueError as e:
         logger.error(str(e))
         logger.error("\nSetup Instructions:")
