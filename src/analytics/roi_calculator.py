@@ -36,9 +36,9 @@ class ROICalculator:
         
         # System operational costs (annual estimates for PoC)
         self.system_costs = {
-            'platform_licenses': 50000,  # Cloud infrastructure, API costs
-            'personnel_training': 30000,  # One-time training
-            'ongoing_maintenance': 20000,  # Annual maintenance
+            'platform_licenses': 80000,   # Cloud infrastructure, API costs
+            'personnel_training': 50000,  # One-time training
+            'ongoing_maintenance': 40000, # Annual maintenance
         }
         
         logger.info("ROI Calculator initialized")
@@ -121,9 +121,9 @@ class ROICalculator:
         total_exposure = self.risk_data['summary']['financial_metrics']['total_exposure_usd']
         high_risk_count = self.risk_data['summary']['risk_distribution']['high_risk']
         
-        # Conservative assumptions
-        baseline_aog_probability = 0.30  # 30% of high-risk items cause AOG without intervention
-        with_skyguard_probability = 0.05  # 5% still slip through despite recommendations
+        # Realistic assumptions based on industry data
+        baseline_aog_probability = 0.08  # 8% of high-risk items cause AOG without intervention
+        with_skyguard_probability = 0.02  # 2% still slip through despite recommendations
         
         # Calculate expected AOG costs
         baseline_aog_cost = total_exposure * baseline_aog_probability

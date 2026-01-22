@@ -103,8 +103,16 @@ class MRODataGenerator(LoggerMixin):
             safety_multiplier = 1.5 if cat_config['criticality'] == 'Critical' else 1.2
             safety_stock = int(base_demand * safety_multiplier)
             
-            # Current stock levels with realistic variance
-            stock_variance = np.random.uniform(0.4, 1.8)
+            # Current stock levels with MORE realistic variance (fewer critical issues)
+            # 80% of components are healthy, 15% warning, 5% critical
+            rand = np.random.random()
+            if rand < 0.80:  # 80% healthy
+                stock_variance = np.random.uniform(1.2, 2.0)
+            elif rand < 0.95:  # 15% warning
+                stock_variance = np.random.uniform(0.8, 1.2)
+            else:  # 5% critical
+                stock_variance = np.random.uniform(0.3, 0.8)
+            
             current_stock = int(safety_stock * stock_variance)
             
             # Simulate data quality issues (5% missing lead times, 3% invalid stocks)
@@ -126,7 +134,7 @@ class MRODataGenerator(LoggerMixin):
                 'reorder_point': int(safety_stock * 1.3),
                 'lead_time_days': lead_time,
                 'lead_time_volatility': volatility if lead_time else 'Unknown',
-                'aog_cost_per_day': int(150000 * cat_config['aog_multiplier'] * np.random.uniform(0.8, 1.2)),
+                'aog_cost_per_day': int(150000 * cat_config['aog_multiplier'] * np.random.uniform(0.3, 0.8)),  # Reduced from 0.8-1.2
                 'supplier_id': f"SUP-{random.randint(1, self.num_suppliers):04d}",
                 'last_updated': (self.base_date + timedelta(days=random.randint(0, self.simulation_days))).strftime('%Y-%m-%d'),
             }
