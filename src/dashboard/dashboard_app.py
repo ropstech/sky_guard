@@ -39,7 +39,7 @@ COLORS = {
     'danger': '#E94B3C',       # Coral red
     'neutral': '#697386',      # Cool gray
     'background': '#F6F9FC',   # Light gray-blue
-    'chart_palette': ['#635BFF', '#00D4AA', '#F5A623', '#E94B3C', '#0A2540']
+    'chart_palette': ["#7F79F7", "#0D7C66", '#F5A623', '#E94B3C', '#0A2540']
 }
 
 # Custom CSS for professional styling
