@@ -222,7 +222,7 @@ def render_executive_summary(roi_data, risk_data):
             margin=dict(t=20, b=20, l=20, r=20),
             font=dict(size=12)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.markdown("### Risk Distribution")
@@ -255,7 +255,7 @@ def render_executive_summary(roi_data, risk_data):
             margin=dict(t=20, b=20, l=20, r=20),
             font=dict(size=12)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     st.markdown("")
     st.markdown("---")
@@ -366,7 +366,7 @@ def render_risk_analysis(risk_data, inventory_df):
             margin=dict(t=20, b=20, l=20, r=20),
             font=dict(size=12)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.markdown("### Risk by Supplier Region")
@@ -389,7 +389,7 @@ def render_risk_analysis(risk_data, inventory_df):
             margin=dict(t=20, b=20, l=20, r=20),
             font=dict(size=12)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     st.markdown("")
     st.markdown("---")
