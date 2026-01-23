@@ -1,0 +1,47 @@
+# Sky-Guard Streamlit Theme Configuration
+# Professional, modern design inspired by enterprise dashboards
+
+[theme]
+# Primary color - Deep blue (used for interactive elements)
+primaryColor = "#095DB1"
+
+# Background color - Clean white
+backgroundColor = "#0d1117"
+
+# Secondary background - Light gray for cards/sections
+secondaryBackgroundColor = "#F6F9FC"
+
+# Text color - Dark navy for readability
+textColor = "#F0F6FC"
+
+# Font - Professional sans-serif stack
+font = "sans serif"
+
+[server]
+# Performance optimizations
+maxUploadSize = 200
+enableXsrfProtection = true
+enableCORS = false
+
+# Development settings
+runOnSave = true
+port = 8501
+
+[browser]
+# Automatically open browser on start
+gatherUsageStats = false
+serverAddress = "localhost"
+
+[runner]
+# Faster reruns
+magicEnabled = true
+fastReruns = true
+
+[logger]
+# Log level for production
+level = "info"
+
+[client]
+# UI optimizations
+showErrorDetails = true
+toolbarMode = "minimal"
