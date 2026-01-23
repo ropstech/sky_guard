@@ -21,6 +21,7 @@ import pandas as pd
 import json
 from pathlib import Path
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Page configuration
 st.set_page_config(
@@ -29,68 +30,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Professional color scheme
-COLORS = {
-    'primary': "#095DB1",      # Deep navy
-    'secondary': '#635BFF',    # Modern purple
-    'success': '#00D4AA',      # Teal green
-    'warning': '#F5A623',      # Amber
-    'danger': '#E94B3C',       # Coral red
-    'neutral': '#697386',      # Cool gray
-    'background': '#F6F9FC',   # Light gray-blue
-    'chart_palette': ["#7F79F7", "#0D7C66", '#F5A623', '#E94B3C', '#0A2540']
-}
-
-# Custom CSS for professional styling
-st.markdown(f"""
-<style>
-    .main-header {{
-        font-size: 2.2rem;
-        font-weight: 600;
-        color: {COLORS['primary']};
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.5px;
-    }}
-    .subtitle {{
-        font-size: 1rem;
-        color: {COLORS['neutral']};
-        font-weight: 400;
-    }}
-    .metric-label {{
-        font-size: 0.875rem;
-        color: {COLORS['neutral']};
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-    }}
-    .status-operational {{
-        background: linear-gradient(135deg, {COLORS['success']} 0%, #00B894 100%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        text-align: center;
-    }}
-    .risk-high {{
-        color: {COLORS['danger']};
-        font-weight: 600;
-    }}
-    .risk-medium {{
-        color: {COLORS['warning']};
-        font-weight: 600;
-    }}
-    .risk-low {{
-        color: {COLORS['success']};
-        font-weight: 600;
-    }}
-    div[data-testid="stMetricValue"] {{
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: {COLORS['primary']};
-    }}
-</style>
-""", unsafe_allow_html=True)
 
 
 class DashboardData:
@@ -123,80 +62,124 @@ class DashboardData:
         return pd.read_csv(_self.data_dir / 'enriched_inventory_with_risks.csv')
 
 
-def render_header():
-    """Render dashboard header with branding."""
-    col1, col2 = st.columns([3, 1])
+def render_sidebar(risk_data, roi_data):
+    """Sidebar with navigation and key metrics."""
     
-    with col1:
-        st.markdown('<p class="main-header">Sky-Guard Executive Dashboard</p>', unsafe_allow_html=True)
-        st.markdown('<p class="subtitle">AI-Driven Operational Resilience for Aviation MRO</p>', unsafe_allow_html=True)
+    with st.sidebar:
+        # Branding
+        st.markdown("# ✈️ Sky-Guard")
+        st.caption("AI-Driven MRO Intelligence")
+        
+        st.markdown("---")
+        
+                
+        # Navigation
+        st.markdown("### Navigation")
+        page = st.radio(
+            "Select View",
+            ["Financial Performance", "Risk Analysis", "AI Recommendations", "Settings"],
+            label_visibility="collapsed"
+        )
+        
+        st.markdown("---")
+        
+        # Quick Stats
+        st.markdown("### Quick Stats")
+        
+        roi_metrics = roi_data['roi_metrics']
+        risk_summary = risk_data['summary']
+        
+        st.metric(
+            "ROI Ratio",
+            f"{roi_metrics['roi_ratio']:.0f}:1"
+        )
+        
+        st.metric(
+            "High-Risk Items",
+            f"{risk_summary['risk_distribution']['high_risk']:,}"
+        )
+        
+        st.metric(
+            "Net Benefit",
+            f"${roi_metrics['net_benefit_usd']/1e6:.0f}M"
+        )
+        
+        st.markdown("---")
+        
+        # System Status
+        st.markdown("### System Status")
+        st.success("🟢 Operational")
+
+        st.markdown("---")
+
+        # Footer
+        st.caption("Sky-Guard v1.0")
+        st.caption("© 2026 RS Technologies")
     
-    with col2:
-        st.markdown('<div class="status-operational">● System Operational</div>', unsafe_allow_html=True)
+    return page
 
 
-def render_executive_summary(roi_data, risk_data):
-    """Tab 1: Executive Summary with key metrics."""
+def render_financial_performance(roi_data, risk_data):
+    """Page 1: Financial Performance."""
     
-    st.markdown("## Financial Performance")
+    st.title("Financial Performance")
     
-    # ROI Metrics
     roi_metrics = roi_data['roi_metrics']
     executive_summary = roi_data['executive_summary']
     
-    # Value proposition
-    st.info(f"**{executive_summary['value_proposition']}**")
+    # Value proposition banner
+    st.info(f"💡 **{executive_summary['value_proposition']}**")
     
     st.markdown("")
     
-    # Key metrics in columns
+    # Key metrics
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.metric(
             label="Net Benefit",
             value=f"${roi_metrics['net_benefit_usd']/1e6:.1f}M",
-            delta="First Year",
-            delta_color="normal"
+            delta="First Year"
         )
     
     with col2:
         st.metric(
             label="ROI Ratio",
             value=f"{roi_metrics['roi_ratio']:.0f}:1",
-            delta=f"{roi_metrics['roi_percentage']:.0f}%",
-            delta_color="normal"
+            delta=f"+{roi_metrics['roi_percentage']:.0f}%"
         )
     
     with col3:
+        payback_months = roi_metrics['payback_period_months']
+        if payback_months < 1:
+            payback_display = f"{payback_months*30:.0f} days"
+        else:
+            payback_display = f"{payback_months:.1f} mo"
+        
         st.metric(
             label="Payback Period",
-            value=f"{roi_metrics['payback_period_months']:.1f} mo",
-            delta="Break-even",
-            delta_color="normal"
+            value=payback_display,
+            delta="Break-even"
         )
     
     with col4:
         st.metric(
             label="Risk Reduction",
             value=f"{roi_data['aog_cost_avoidance']['risk_reduction_percentage']:.0f}%",
-            delta="AOG Prevention",
-            delta_color="normal"
+            delta="AOG Prevention"
         )
     
-    st.markdown("")
     st.markdown("---")
-    st.markdown("")
     
-    # Investment Breakdown
+    # Charts
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### Investment Structure")
+        st.subheader("Investment Structure")
         investment = roi_data['investment_breakdown']
         
         inv_data = pd.DataFrame({
-            'Category': ['System Setup', 'Annual Operations', 'Mitigation Actions'],
+            'Category': ['System Setup', 'Operations', 'Mitigations'],
             'Amount': [
                 investment['one_time_setup'],
                 investment['annual_operating_costs'],
@@ -208,24 +191,22 @@ def render_executive_summary(roi_data, risk_data):
             inv_data,
             values='Amount',
             names='Category',
-            hole=0.5,
-            color_discrete_sequence=COLORS['chart_palette']
+            hole=0.6
         )
         fig.update_traces(
             textposition='inside',
             textinfo='percent',
-            hovertemplate="<b>%{label}</b><br>€%{value:,.0f}<br>%{percent}<extra></extra>",
-            marker=dict(line=dict(color='white', width=2))
+            hovertemplate="<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>"
         )
         fig.update_layout(
             showlegend=True,
-            margin=dict(t=20, b=20, l=20, r=20),
-            font=dict(size=12)
+            margin=dict(t=10, b=10, l=10, r=10),
+            height=350
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
     with col2:
-        st.markdown("### Risk Distribution")
+        st.subheader("Risk Distribution")
         risk_summary = risk_data['summary']
         
         risk_dist = pd.DataFrame({
@@ -243,44 +224,42 @@ def render_executive_summary(roi_data, risk_data):
             y='Components',
             color='Risk Level',
             color_discrete_map={
-                'High': COLORS['danger'],
-                'Medium': COLORS['warning'],
-                'Low': COLORS['success']
+                'High': '#E94B3C',
+                'Medium': '#F5A623',
+                'Low': '#00D4AA'
             }
         )
         fig.update_layout(
             showlegend=False,
             xaxis_title="",
             yaxis_title="Component Count",
-            margin=dict(t=20, b=20, l=20, r=20),
-            font=dict(size=12)
+            margin=dict(t=10, b=10, l=10, r=10),
+            height=350
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
-    st.markdown("")
     st.markdown("---")
-    st.markdown("")
     
-    # Strategic Recommendation
-    st.markdown("### Strategic Recommendation")
+    # Recommendation
+    st.subheader("Strategic Recommendation")
     recommendation = executive_summary['recommendation']
     
     if "STRONG RECOMMEND" in recommendation:
-        st.success(f"✓ {recommendation}")
+        st.success(f"✅ {recommendation}")
     elif "RECOMMEND" in recommendation:
-        st.info(f"→ {recommendation}")
+        st.info(f"ℹ️ {recommendation}")
     else:
-        st.warning(f"⚠ {recommendation}")
+        st.warning(f"⚠️ {recommendation}")
 
 
 def render_risk_analysis(risk_data, inventory_df):
-    """Tab 2: Detailed risk analysis and component listing."""
+    """Page 2: Risk Analysis."""
     
-    st.markdown("## Risk Overview")
+    st.title("Risk Analysis")
     
     risk_summary = risk_data['summary']
     
-    # Risk Overview
+    # Overview metrics
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -292,7 +271,7 @@ def render_risk_analysis(risk_data, inventory_df):
     
     with col2:
         st.metric(
-            "Total Financial Exposure",
+            "Total Exposure",
             f"${risk_summary['financial_metrics']['total_exposure_usd']/1e9:.1f}B",
             delta="AOG Cost Risk"
         )
@@ -302,24 +281,20 @@ def render_risk_analysis(risk_data, inventory_df):
         st.metric(
             "Top Risk Category",
             top_category,
-            delta=f"{risk_summary['top_risk_categories'][top_category]} components"
+            delta=f"{risk_summary['top_risk_categories'][top_category]} items"
         )
     
-    st.markdown("")
     st.markdown("---")
-    st.markdown("")
     
-    # Top 20 Critical Risks
-    st.markdown("### Critical Components Requiring Action")
+    # Critical components table
+    st.subheader("Critical Components Requiring Action")
     
     top_risks_df = pd.DataFrame(risk_data['top_risks'])
     
-    # Format currency columns
     top_risks_df['Exposure'] = top_risks_df['financial_exposure_usd'].apply(
         lambda x: f"${x/1e6:.1f}M"
     )
     
-    # Select and rename columns
     display_df = top_risks_df[[
         'part_number', 'category', 'criticality', 
         'current_stock', 'safety_stock', 'lead_time_days',
@@ -328,77 +303,73 @@ def render_risk_analysis(risk_data, inventory_df):
     
     display_df.columns = [
         'Part Number', 'Category', 'Criticality',
-        'Stock', 'Safety Stock', 'Lead Time (days)',
+        'Stock', 'Safety Stock', 'Lead Time',
         'Risk Score', 'Exposure'
     ]
     
     st.dataframe(
         display_df,
-        width='stretch',
-        hide_index=True
+        use_container_width=True,
+        hide_index=True,
+        height=400
     )
     
-    st.markdown("")
     st.markdown("---")
-    st.markdown("")
     
-    # Risk by Category and Region
+    # Risk breakdown charts
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### Risk by Category")
-        category_risks = pd.DataFrame(
+        st.subheader("Risk by Category")
+        
+        category_data = pd.DataFrame(
             list(risk_summary['top_risk_categories'].items()),
             columns=['Category', 'Count']
-        )
+        ).sort_values('Count', ascending=True)
         
         fig = px.bar(
-            category_risks,
+            category_data,
             y='Category',
             x='Count',
-            orientation='h',
-            color_discrete_sequence=[COLORS['secondary']]
+            orientation='h'
         )
         fig.update_layout(
             showlegend=False,
             xaxis_title="High-Risk Components",
             yaxis_title="",
-            margin=dict(t=20, b=20, l=20, r=20),
-            font=dict(size=12)
+            margin=dict(t=10, b=10, l=10, r=10),
+            height=350
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
     with col2:
-        st.markdown("### Risk by Supplier Region")
-        region_risks = pd.DataFrame(
+        st.subheader("Risk by Region")
+        
+        region_data = pd.DataFrame(
             list(risk_summary['top_risk_regions'].items()),
             columns=['Region', 'Count']
-        )
+        ).sort_values('Count', ascending=True)
         
         fig = px.bar(
-            region_risks,
+            region_data,
             y='Region',
             x='Count',
-            orientation='h',
-            color_discrete_sequence=[COLORS['success']]
+            orientation='h'
         )
         fig.update_layout(
             showlegend=False,
             xaxis_title="High-Risk Components",
             yaxis_title="",
-            margin=dict(t=20, b=20, l=20, r=20),
-            font=dict(size=12)
+            margin=dict(t=10, b=10, l=10, r=10),
+            height=350
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
-    st.markdown("")
     st.markdown("---")
-    st.markdown("")
     
-    # Interactive Data Explorer
-    st.markdown("### Component Explorer")
+    # Interactive explorer
+    st.subheader("Component Explorer")
     
-    # Filters
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -417,19 +388,18 @@ def render_risk_analysis(risk_data, inventory_df):
     
     with col3:
         selected_region = st.multiselect(
-            "Supplier Region",
+            "Region",
             options=inventory_df['region'].unique(),
             default=inventory_df['region'].unique()
         )
     
-    # Filter data
     filtered_df = inventory_df[
         (inventory_df['risk_level'].isin(selected_risk)) &
         (inventory_df['category'].isin(selected_category)) &
         (inventory_df['region'].isin(selected_region))
     ]
     
-    st.caption(f"Showing {len(filtered_df):,} components")
+    st.caption(f"Showing {len(filtered_df):,} of {len(inventory_df):,} components")
     
     display_filtered = filtered_df[[
         'part_number', 'category', 'criticality', 'current_stock', 
@@ -438,31 +408,29 @@ def render_risk_analysis(risk_data, inventory_df):
     ]].sort_values('composite_risk_score', ascending=False).head(100)
     
     display_filtered.columns = [
-        'Part Number', 'Category', 'Criticality', 'Stock',
-        'Safety Stock', 'Risk Level', 'Risk Score',
-        'Exposure ($)', 'Region'
+        'Part', 'Category', 'Criticality', 'Stock',
+        'Safety', 'Risk', 'Score', 'Exposure', 'Region'
     ]
     
     st.dataframe(
         display_filtered,
-        width='stretch',
-        hide_index=True
+        use_container_width=True,
+        hide_index=True,
+        height=400
     )
 
 
 def render_ai_recommendations(recommendations_data):
-    """Tab 3: AI-generated strategic recommendations."""
+    """Page 3: AI Recommendations."""
     
-    st.markdown("## AI-Generated Strategic Recommendations")
+    st.title("AI-Powered Recommendations")
     
     metadata = recommendations_data['metadata']
     recommendations = recommendations_data['recommendations']
     
-    st.caption(f"Model: {metadata['model_used']} • Generated {metadata['total_recommendations']} recommendations")
+    st.caption(f"🤖 Model: {metadata['model_used']} • {metadata['total_recommendations']} recommendations generated")
     
-    st.markdown("")
-    
-    # Summary metrics
+    # Summary
     total_exposure = sum(r['component']['financial_exposure_usd'] for r in recommendations)
     
     col1, col2 = st.columns(2)
@@ -471,92 +439,111 @@ def render_ai_recommendations(recommendations_data):
         st.metric(
             "Components Analyzed",
             len(recommendations),
-            delta="Top Priority Items"
+            delta="Top Priority"
         )
     
     with col2:
         st.metric(
-            "Total Exposure Addressed",
+            "Total Exposure",
             f"${total_exposure/1e6:.1f}M",
             delta="AOG Risk"
         )
     
-    st.markdown("")
     st.markdown("---")
-    st.markdown("")
     
-    # Individual recommendations
+    # Recommendations
     for idx, rec in enumerate(recommendations, 1):
         component = rec['component']
-        ai_analysis = rec['ai_analysis']
+        ai = rec['ai_analysis']
         
         with st.expander(
-            f"**{idx}. {component['part_number']} — {component['category']}** • "
-            f"${component['financial_exposure_usd']/1e6:.1f}M exposure • "
-            f"Confidence: {ai_analysis['confidence_level']}",
+            f"**{idx}. {component['part_number']}** — {component['category']} • "
+            f"${component['financial_exposure_usd']/1e6:.1f}M • "
+            f"Confidence: {ai['confidence_level']}",
             expanded=(idx <= 2)
         ):
-            # Root Cause
-            st.markdown("#### Root Cause Analysis")
-            st.markdown(ai_analysis['root_cause'])
+            st.markdown("#### Root Cause")
+            st.write(ai['root_cause'])
             
-            st.markdown("")
-            
-            # Mitigation Options
             st.markdown("#### Mitigation Options")
             
-            options_df = pd.DataFrame(ai_analysis['mitigation_options'])
+            options_df = pd.DataFrame(ai['mitigation_options'])
+            options_df['Cost'] = options_df['estimated_cost_usd'].apply(lambda x: f"${x:,.0f}")
             
-            # Format currency
-            options_df['Cost'] = options_df['estimated_cost_usd'].apply(
-                lambda x: f"${x:,.0f}"
-            )
-            
-            display_options = options_df[[
+            display = options_df[[
                 'option', 'description', 'Cost',
                 'implementation_time_days', 'risk_reduction_pct'
             ]].copy()
             
-            display_options.columns = [
-                'Option', 'Description', 'Cost',
-                'Timeline (days)', 'Risk Reduction (%)'
-            ]
+            display.columns = ['Option', 'Description', 'Cost', 'Timeline (days)', 'Risk Reduction (%)']
             
-            st.dataframe(
-                display_options,
-                width='stretch',
-                hide_index=True
-            )
+            st.dataframe(display, use_container_width=True, hide_index=True)
             
-            st.markdown("")
-            
-            # Recommended Action
             st.markdown("#### Recommended Action")
-            st.success(ai_analysis['recommended_action'])
+            st.success(ai['recommended_action'])
             
-            # Expected ROI
-            st.markdown("#### Expected Return")
-            st.info(ai_analysis['expected_roi'])
+            st.markdown("#### Expected ROI")
+            st.info(ai['expected_roi'])
+
+
+def render_settings():
+    """Page 4: Settings."""
+    
+    st.title("Settings")
+    
+    st.subheader("Data Pipeline")
+    
+    st.write("**Last Data Generation:**")
+    try:
+        summary_path = Path('data/raw/generation_summary.json')
+        if summary_path.exists():
+            with open(summary_path, 'r') as f:
+                summary = json.load(f)
+            st.code(summary['generation_timestamp'])
+        else:
+            st.warning("No data generated yet")
+    except Exception as e:
+        st.error(f"Error loading summary: {e}")
+    
+    st.markdown("---")
+    
+    st.subheader("Regenerate Data")
+    
+    if st.button("🔄 Generate New Dataset"):
+        st.info("Run: `uv run python src/data_generation/generate_data.py`")
+    
+    if st.button("🔍 Validate Data"):
+        st.info("Run: `uv run python src/data_generation/validate_data.py`")
+    
+    if st.button("📊 Run Analysis"):
+        st.info("Run: `uv run python src/analytics/detect_anomalies.py`")
+    
+    st.markdown("---")
+    
+    st.subheader("About")
+    st.write("**Sky-Guard v1.0**")
+    st.write("AI-Driven Operational Resilience for Aviation MRO")
+    st.caption("© 2026 RS Technologies, Inc.")
 
 
 def main():
     """Main dashboard application."""
     
-    # Check if data exists
+    # Check data availability
     data_dir = Path('data/processed')
     required_files = ['risk_analysis.json', 'ai_recommendations.json', 'roi_analysis.json']
     
-    missing_files = [f for f in required_files if not (data_dir / f).exists()]
+    missing = [f for f in required_files if not (data_dir / f).exists()]
     
-    if missing_files:
-        st.error(f"Missing required data files: {', '.join(missing_files)}")
+    if missing:
+        st.error(f"❌ Missing: {', '.join(missing)}")
         st.info("""
-        **Please run the analysis pipeline first:**
+        **Run the pipeline:**
         ```bash
-        python src/data_generation/generate_data.py
-        python src/analytics/detect_anomalies.py
-        python src/ai_reasoning/ai_reasoning_engine.py
-        python src/analytics/roi_calculator.py
+        uv run python src/data_generation/generate_data.py
+        uv run python src/analytics/detect_anomalies.py
+        uv run python src/ai_reasoning/ai_reasoning_engine.py
+        uv run python src/analytics/roi_calculator.py
         ```
         """)
         return
@@ -570,40 +557,21 @@ def main():
         roi_data = data.load_roi_analysis()
         inventory_df = data.load_enriched_inventory()
     except Exception as e:
-        st.error(f"Error loading data: {e}")
+        st.error(f"❌ Error loading data: {e}")
         return
     
-    # Render header
-    render_header()
+    # Sidebar navigation
+    page = render_sidebar(risk_data, roi_data)
     
-    st.markdown("")
-    st.markdown("---")
-    st.markdown("")
-    
-    # Create tabs
-    tab1, tab2, tab3 = st.tabs([
-        "Financial Performance",
-        "Risk Analysis",
-        "AI Recommendations"
-    ])
-    
-    with tab1:
-        render_executive_summary(roi_data, risk_data)
-    
-    with tab2:
+    # Render selected page
+    if page == "Financial Performance":
+        render_financial_performance(roi_data, risk_data)
+    elif page == "Risk Analysis":
         render_risk_analysis(risk_data, inventory_df)
-    
-    with tab3:
+    elif page == "AI Recommendations":
         render_ai_recommendations(recommendations_data)
-    
-    # Footer
-    st.markdown("")
-    st.markdown("---")
-    st.markdown("""
-    <div style='text-align: center; color: #697386; font-size: 0.875rem;'>
-        Sky-Guard v1.0 • AI-Powered Supply Chain Intelligence • © 2026 RS Technologies, Inc.
-    </div>
-    """, unsafe_allow_html=True)
+    elif page == "Settings":
+        render_settings()
 
 
 if __name__ == "__main__":
