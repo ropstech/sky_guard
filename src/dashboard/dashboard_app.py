@@ -359,7 +359,18 @@ def render_risk_analysis(risk_data, inventory_df):
             height=350
         )
         st.plotly_chart(fig, use_container_width=True)
-    
+
+
+    st.markdown("---")
+    st.subheader("Global Risk Distribution")
+    try:
+        map_fig = render_global_risk_map(risk_summary)
+        st.plotly_chart(map_fig, use_container_width=True)
+    except Exception as e:
+        st.error(f"Map rendering failed: {e}")
+
+
+
     with col2:
         st.subheader("Risk by Region")
         
@@ -542,6 +553,85 @@ def render_settings():
     st.write("**Sky-Guard v1.0**")
     st.write("AI-Driven Operational Resilience for Aviation MRO")
     st.caption("© 2026 RS Technologies, Inc.")
+
+
+def render_global_risk_map(risk_summary):
+    """Interactive world map showing geographic risk distribution."""
+    
+    # Map regions to countries with risk distribution
+    region_country_map = {
+        'Middle East': {
+            'ARE': 250, 'SAU': 200, 'TUR': 180, 'QAT': 120, 'ISR': 90, 'OMN': 43
+        },
+        'Asia-Pacific': {
+            'CHN': 200, 'SGP': 150, 'JPN': 100, 'KOR': 80, 'TWN': 60, 'THA': 40, 'VNM': 22
+        },
+        'North America': {
+            'USA': 350, 'CAN': 150, 'MEX': 81
+        },
+        'Europe': {
+            'DEU': 120, 'FRA': 100, 'GBR': 90, 'ITA': 70, 'NLD': 50, 'ESP': 29
+        }
+    }
+    
+    # Build country data from regional counts
+    map_data = []
+    for region, region_count in risk_summary['top_risk_regions'].items():
+        if region in region_country_map:
+            countries = region_country_map[region]
+            total = sum(countries.values())
+            
+            for country_code, weight in countries.items():
+                actual_count = int((weight / total) * region_count)
+                map_data.append({
+                    'country': country_code,
+                    'risk_count': actual_count,
+                    'region': region
+                })
+    
+    df = pd.DataFrame(map_data)
+    
+    # Create choropleth
+    fig = px.choropleth(
+        df,
+        locations='country',
+        color='risk_count',
+        hover_name='region',
+        hover_data={'risk_count': ':,', 'country': False},
+        color_continuous_scale=[
+            [0, '#1A3D2E'],
+            [0.4, '#4A3A1A'],
+            [0.7, '#7F5C2E'],
+            [1, '#7D2D26']
+        ],
+        labels={'risk_count': 'High-Risk Components'},
+        projection='natural earth'
+    )
+    
+    fig.update_geos(
+        showcoastlines=True,
+        coastlinecolor='#444',
+        showland=True,
+        landcolor='#1A1C24',
+        showocean=True,
+        oceancolor='#0D0E10',
+        showcountries=True,
+        countrycolor='#333'
+    )
+    
+    fig.update_layout(
+        margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor='#262624',
+        geo=dict(bgcolor='#262624'),
+        height=450,
+        coloraxis_colorbar=dict(
+            title="Risk Level",
+            tickfont=dict(color='white')
+        )
+    )
+    
+    return fig
+
 
 
 def main():
