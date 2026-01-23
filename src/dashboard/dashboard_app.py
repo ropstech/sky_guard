@@ -22,6 +22,7 @@ import json
 from pathlib import Path
 import plotly.express as px
 import plotly.graph_objects as go
+from streamlit_option_menu import option_menu
 
 # Page configuration
 st.set_page_config(
@@ -63,58 +64,75 @@ class DashboardData:
 
 
 def render_sidebar(risk_data, roi_data):
-    """Sidebar with navigation and key metrics."""
+    """Sidebar with professional navigation and key metrics."""
     
     with st.sidebar:
-        # Branding
-        st.markdown("# ✈️ Sky-Guard")
-        st.caption("AI-Driven MRO Intelligence")
-        
+        # Branding (Logo/Title Area)
+        st.markdown(
+            """
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+            
+            <div style="text-align: left; margin-bottom: 20px;">
+                <i class="fa-solid fa-plane-lock" style="font-size: 2.5rem; color: #DA7758; margin-bottom: 10px; font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
+                <h1 style="margin-bottom: 0;">Sky-Guard</h1>
+                <p style="font-size: 0.8em; color: gray;">AI-Driven MRO Intelligence</p>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
+
         st.markdown("---")
-        
-                
-        # Navigation
         st.markdown("### Navigation")
-        page = st.radio(
-            "Select View",
-            ["Financial Performance", "Risk Analysis", "AI Recommendations", "Settings"],
-            label_visibility="collapsed"
+
+        # Navigation with Icons (The Upgrade)
+        # Icons originate from Bootstrap Icons: https://icons.getbootstrap.com/
+        page = option_menu(
+            menu_title=None,  # Hide title
+            options=["Financial Performance", "Risk Analysis", "AI Recommendations", "Settings"],
+            icons=["graph-up-arrow", "shield-exclamation", "cpu", "sliders"], 
+            default_index=0,
+            styles={
+                "container": {"padding": "0!important", "background-color": "transparent"},
+                "icon": {"color": "#DA7758", "font-size": "16px"}, 
+                "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#141413"},
+                "nav-link-selected": {"background-color": "#7C4937"},
+            }
         )
         
         st.markdown("---")
         
-        # Quick Stats
+        # KPI Section inside an expander or dedicated container for cleaner look
         st.markdown("### Quick Stats")
         
         roi_metrics = roi_data['roi_metrics']
         risk_summary = risk_data['summary']
         
-        st.metric(
-            "ROI Ratio",
-            f"{roi_metrics['roi_ratio']:.0f}:1"
-        )
-        
-        st.metric(
-            "High-Risk Items",
-            f"{risk_summary['risk_distribution']['high_risk']:,}"
-        )
-        
-        st.metric(
-            "Net Benefit",
-            f"${roi_metrics['net_benefit_usd']/1e6:.0f}M"
-        )
-        
+        # Using columns inside sidebar for compact metric view
+        c1, c2 = st.columns(2)
+        with c1:
+            st.metric("ROI Ratio", f"{roi_metrics['roi_ratio']:.0f}:1")
+            st.metric("Net Benefit", f"${roi_metrics['net_benefit_usd']/1e6:.0f}M")
+        with c2:
+            st.metric("High-Risk Items", f"{risk_summary['risk_distribution']['high_risk']:,}")
+
         st.markdown("---")
         
         # System Status
         st.markdown("### System Status")
-        st.success("🟢 Operational")
+        st.success("Operational", icon=":material/check_circle:")
 
         st.markdown("---")
-
-        # Footer
-        st.caption("Sky-Guard v1.0")
-        st.caption("© 2026 RS Technologies")
+        
+        # Subtle Footer
+        st.markdown(
+            """
+            <div style="font-size: 0.75em; color: #888; text-align: center;">
+                Sky-Guard v1.0 Enterprise<br>
+                © 2026 RS Technologies
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
     
     return page
 
@@ -128,7 +146,7 @@ def render_financial_performance(roi_data, risk_data):
     executive_summary = roi_data['executive_summary']
     
     # Value proposition banner
-    st.info(f"💡 **{executive_summary['value_proposition']}**")
+    st.info(f"**{executive_summary['value_proposition']}**", icon=":material/celebration:")
     
     st.markdown("")
     
@@ -224,9 +242,9 @@ def render_financial_performance(roi_data, risk_data):
             y='Components',
             color='Risk Level',
             color_discrete_map={
-                'High': '#E94B3C',
-                'Medium': '#F5A623',
-                'Low': '#00D4AA'
+                'High': "#7D2D26",
+                'Medium': "#81530A",
+                'Low': "#058168"
             }
         )
         fig.update_layout(
@@ -245,7 +263,7 @@ def render_financial_performance(roi_data, risk_data):
     recommendation = executive_summary['recommendation']
     
     if "STRONG RECOMMEND" in recommendation:
-        st.success(f"✅ {recommendation}")
+        st.success(f"{recommendation}", icon=":material/check:")
     elif "RECOMMEND" in recommendation:
         st.info(f"ℹ️ {recommendation}")
     else:

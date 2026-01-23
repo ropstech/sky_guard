@@ -4,10 +4,10 @@ enableStaticServing = true
 
 [theme]
 base = "dark"
-primaryColor = "#1ed760"
-backgroundColor = "#2a2a2a"
-secondaryBackgroundColor = "#121212"
-codeBackgroundColor = "#121212"
+primaryColor = "#1A1C24"
+backgroundColor = "#262624"
+secondaryBackgroundColor = "#1E1F20"
+codeBackgroundColor = "#1E1F20"
 textColor = "#ffffff"
 linkColor = "#1ed760"
 borderColor = "#7c7c7c"
@@ -17,10 +17,10 @@ buttonRadius = "full"
 font = "Poppins"
 headingFontWeights = [600, 500, 500, 500, 500, 500]
 headingFontSizes = ["3rem", "2.5rem", "2.25rem", "2rem", "1.5rem"]
-chartCategoricalColors = ["#ffc862", "#2d46b9", "#b49bc8"]
+chartCategoricalColors = ["#7C4937", "#2d46b9", "#b49bc8"]
 
 [theme.sidebar]
-backgroundColor = "#121212"
-secondaryBackgroundColor = "#000000"
-codeBackgroundColor = "#2a2a2a"
+backgroundColor = "#1E1F20"
+secondaryBackgroundColor = "#262624"
+codeBackgroundColor = "#010409"
 borderColor = "#696969"
