@@ -304,6 +304,16 @@ def render_risk_analysis(risk_data, inventory_df):
     
     st.markdown("---")
     
+    # Global Risk Map
+    st.subheader("Global Risk Distribution")
+    try:
+        map_fig = render_global_risk_map(inventory_df)
+        st.plotly_chart(map_fig, use_container_width=True)
+    except Exception as e:
+        st.error(f"Map rendering failed: {e}")
+    
+    st.markdown("---")
+    
     # Critical components table
     st.subheader("Critical Components Requiring Action")
     
@@ -359,17 +369,6 @@ def render_risk_analysis(risk_data, inventory_df):
             height=350
         )
         st.plotly_chart(fig, use_container_width=True)
-
-
-    st.markdown("---")
-    st.subheader("Global Risk Distribution")
-    try:
-        map_fig = render_global_risk_map(risk_summary)
-        st.plotly_chart(map_fig, use_container_width=True)
-    except Exception as e:
-        st.error(f"Map rendering failed: {e}")
-
-
 
     with col2:
         st.subheader("Risk by Region")
@@ -486,7 +485,7 @@ def render_ai_recommendations(recommendations_data):
         ai = rec['ai_analysis']
         
         with st.expander(
-            f"**{idx}. {component['part_number']}** — {component['category']} • "
+            f"**{idx}. {component['part_number']}** – {component['category']} • "
             f"${component['financial_exposure_usd']/1e6:.1f}M • "
             f"Confidence: {ai['confidence_level']}",
             expanded=(idx <= 2)
@@ -555,59 +554,51 @@ def render_settings():
     st.caption("© 2026 RS Technologies, Inc.")
 
 
-def render_global_risk_map(risk_summary):
-    """Interactive world map showing geographic risk distribution."""
+def render_global_risk_map(inventory_df):
+    """
+    Interactive world map showing geographic risk distribution using real data.
     
-    # Map regions to countries with risk distribution
-    region_country_map = {
-        'Middle East': {
-            'ARE': 250, 'SAU': 200, 'TUR': 180, 'QAT': 120, 'ISR': 90, 'OMN': 43
-        },
-        'Asia-Pacific': {
-            'CHN': 200, 'SGP': 150, 'JPN': 100, 'KOR': 80, 'TWN': 60, 'THA': 40, 'VNM': 22
-        },
-        'North America': {
-            'USA': 350, 'CAN': 150, 'MEX': 81
-        },
-        'Europe': {
-            'DEU': 120, 'FRA': 100, 'GBR': 90, 'ITA': 70, 'NLD': 50, 'ESP': 29
-        }
-    }
+    Now uses actual country_code from enriched inventory data instead of dummy data.
+    """
     
-    # Build country data from regional counts
-    map_data = []
-    for region, region_count in risk_summary['top_risk_regions'].items():
-        if region in region_country_map:
-            countries = region_country_map[region]
-            total = sum(countries.values())
-            
-            for country_code, weight in countries.items():
-                actual_count = int((weight / total) * region_count)
-                map_data.append({
-                    'country': country_code,
-                    'risk_count': actual_count,
-                    'region': region
-                })
+    # Filter to high-risk components only
+    high_risk_df = inventory_df[inventory_df['risk_level'] == 'High'].copy()
     
-    df = pd.DataFrame(map_data)
+    # Check if country_code column exists
+    if 'country_code' not in high_risk_df.columns:
+        raise ValueError("country_code column not found in inventory data. Please re-run detect_anomalies.py")
     
-    # Create choropleth
+    # Aggregate risk counts by country
+    country_risk_counts = high_risk_df.groupby('country_code').size().reset_index(name='risk_count')
+    
+    # Also get region information for hover tooltips
+    country_regions = high_risk_df.groupby('country_code')['region'].first().reset_index()
+    
+    # Merge to get final data
+    map_data = country_risk_counts.merge(country_regions, on='country_code', how='left')
+    
+    # Create choropleth map
     fig = px.choropleth(
-        df,
-        locations='country',
+        map_data,
+        locations='country_code',
         color='risk_count',
         hover_name='region',
-        hover_data={'risk_count': ':,', 'country': False},
+        hover_data={
+            'risk_count': ':,', 
+            'country_code': True,
+            'region': True
+        },
         color_continuous_scale=[
-            [0, '#1A3D2E'],
-            [0.4, '#4A3A1A'],
-            [0.7, '#7F5C2E'],
-            [1, '#7D2D26']
+            [0, '#1A3D2E'],      # Dark green (low risk)
+            [0.4, '#4A3A1A'],    # Dark yellow-brown
+            [0.7, '#7F5C2E'],    # Medium orange-brown
+            [1, '#7D2D26']       # Dark red (high risk)
         ],
         labels={'risk_count': 'High-Risk Components'},
         projection='natural earth'
     )
     
+    # Update map styling
     fig.update_geos(
         showcoastlines=True,
         coastlinecolor='#444',
@@ -619,6 +610,7 @@ def render_global_risk_map(risk_summary):
         countrycolor='#333'
     )
     
+    # Update layout
     fig.update_layout(
         margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor='#262624',
@@ -631,7 +623,6 @@ def render_global_risk_map(risk_summary):
     )
     
     return fig
-
 
 
 def main():

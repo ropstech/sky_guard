@@ -100,7 +100,7 @@ class AnomalyDetector:
         
         # Merge datasets
         self.enriched = self.inventory.merge(
-            self.suppliers[['supplier_id', 'on_time_delivery_pct', 'risk_exposure', 'region']],
+            self.suppliers[['supplier_id', 'on_time_delivery_pct', 'risk_exposure', 'region', 'country', 'country_code']],
             on='supplier_id',
             how='left'
         )

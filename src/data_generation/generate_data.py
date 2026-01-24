@@ -74,6 +74,40 @@ class MRODataGenerator(LoggerMixin):
             'Middle East': {'reliability_base': 0.80, 'lead_time_base': 35, 'cost_factor': 0.9},
         }
         
+        # Country mapping with ISO codes and weights (for realistic distribution)
+        self.region_countries = {
+            'Middle East': {
+                'UAE': {'code': 'ARE', 'weight': 0.28, 'risk_modifier': 1.0},
+                'Saudi Arabia': {'code': 'SAU', 'weight': 0.23, 'risk_modifier': 1.1},
+                'Turkey': {'code': 'TUR', 'weight': 0.21, 'risk_modifier': 0.9},
+                'Qatar': {'code': 'QAT', 'weight': 0.14, 'risk_modifier': 1.0},
+                'Israel': {'code': 'ISR', 'weight': 0.10, 'risk_modifier': 0.85},
+                'Oman': {'code': 'OMN', 'weight': 0.04, 'risk_modifier': 1.05}
+            },
+            'Asia-Pacific': {
+                'China': {'code': 'CHN', 'weight': 0.31, 'risk_modifier': 1.1},
+                'Singapore': {'code': 'SGP', 'weight': 0.23, 'risk_modifier': 0.85},
+                'Japan': {'code': 'JPN', 'weight': 0.15, 'risk_modifier': 0.75},
+                'South Korea': {'code': 'KOR', 'weight': 0.12, 'risk_modifier': 0.80},
+                'Taiwan': {'code': 'TWN', 'weight': 0.09, 'risk_modifier': 0.85},
+                'Thailand': {'code': 'THA', 'weight': 0.06, 'risk_modifier': 1.0},
+                'Vietnam': {'code': 'VNM', 'weight': 0.04, 'risk_modifier': 1.05}
+            },
+            'North America': {
+                'USA': {'code': 'USA', 'weight': 0.60, 'risk_modifier': 0.85},
+                'Canada': {'code': 'CAN', 'weight': 0.26, 'risk_modifier': 0.80},
+                'Mexico': {'code': 'MEX', 'weight': 0.14, 'risk_modifier': 0.95}
+            },
+            'Europe': {
+                'Germany': {'code': 'DEU', 'weight': 0.26, 'risk_modifier': 0.75},
+                'France': {'code': 'FRA', 'weight': 0.22, 'risk_modifier': 0.80},
+                'UK': {'code': 'GBR', 'weight': 0.20, 'risk_modifier': 0.82},
+                'Italy': {'code': 'ITA', 'weight': 0.15, 'risk_modifier': 0.90},
+                'Netherlands': {'code': 'NLD', 'weight': 0.11, 'risk_modifier': 0.78},
+                'Spain': {'code': 'ESP', 'weight': 0.06, 'risk_modifier': 0.88}
+            }
+        }
+        
     def generate_inventory_master(self):
         """
         Create the foundational inventory dataset with realistic business constraints.
@@ -183,9 +217,16 @@ class MRODataGenerator(LoggerMixin):
             region = random.choice(list(self.supplier_regions.keys()))
             region_config = self.supplier_regions[region]
             
-            # Realistic reliability scoring
+            # Select country from region with weighted distribution
+            country_data = self._select_country_from_region(region)
+            
+            # Realistic reliability scoring with country modifier
             base_reliability = region_config['reliability_base']
-            reliability = np.clip(np.random.normal(base_reliability, 0.08), 0.6, 0.99)
+            country_modifier = country_data['risk_modifier']
+            reliability = np.clip(
+                np.random.normal(base_reliability * country_modifier, 0.08), 
+                0.6, 0.99
+            )
             
             # Lead time with regional variance
             base_lead = region_config['lead_time_base']
@@ -197,7 +238,8 @@ class MRODataGenerator(LoggerMixin):
                                  f"{random.choice(['Systems', 'Components', 'Manufacturing', 'Industries'])} "
                                  f"{random.choice(['Ltd', 'Inc', 'GmbH', 'SA'])}",
                 'region': region,
-                'country': self._get_country_for_region(region),
+                'country': country_data['name'],
+                'country_code': country_data['code'],
                 'tier': random.choice(['Tier-1', 'Tier-1', 'Tier-2', 'Tier-3']),  # More Tier-1s
                 'on_time_delivery_pct': round(reliability * 100, 1),
                 'quality_rating': round(np.random.uniform(85, 99), 1),
@@ -287,8 +329,24 @@ class MRODataGenerator(LoggerMixin):
         
         return df
     
+    def _select_country_from_region(self, region):
+        """Select country from region based on weighted distribution."""
+        countries = self.region_countries[region]
+        
+        # Weighted random selection
+        country_names = list(countries.keys())
+        weights = [countries[c]['weight'] for c in country_names]
+        
+        selected = random.choices(country_names, weights=weights, k=1)[0]
+        
+        return {
+            'name': selected,
+            'code': countries[selected]['code'],
+            'risk_modifier': countries[selected]['risk_modifier']
+        }
+    
     def _get_country_for_region(self, region):
-        """Map regions to realistic country distributions."""
+        """Map regions to realistic country distributions (legacy - kept for compatibility)."""
         country_map = {
             'Asia-Pacific': ['Singapore', 'South Korea', 'Japan', 'Taiwan', 'China'],
             'Europe': ['Germany', 'France', 'UK', 'Italy', 'Netherlands'],
