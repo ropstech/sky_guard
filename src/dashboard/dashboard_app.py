@@ -1,19 +1,7 @@
 """
-Sky-Guard: Executive Dashboard
-===============================
-
-Business Purpose:
-    Interactive web interface for C-level executives to visualize:
-    - Financial ROI and business case
-    - High-risk components requiring action
-    - AI-generated strategic recommendations
-    
-    Replaces static PowerPoint slides with live, data-driven insights.
-    
-Usage:
-    streamlit run src/dashboard/dashboard_app.py
-    
-    Then open browser at: http://localhost:8501
+Sky-Guard: Executive Dashboard - PHASE 1: COLOR HARMONIZATION
+==============================================================
+Modernisierung: Kohärentes Farbschema basierend auf Claude.ai Design
 """
 
 import streamlit as st
@@ -24,7 +12,75 @@ import plotly.express as px
 import plotly.graph_objects as go
 from streamlit_option_menu import option_menu
 
-# Page configuration
+
+# ============================================================================
+# PHASE 1: CENTRALIZED COLOR PALETTE
+# ============================================================================
+class ColorScheme:
+    """
+    Zentrale Farbpalette für alle Visualisierungen.
+    Abgeleitet von config.toml Theme-Settings.
+    """
+    
+    # Brand Colors (from config.toml)
+    PRIMARY = "#DA7758"      # Terrakotta (Akzentfarbe)
+    SECONDARY = "#7C4937"    # Dunkles Terrakotta
+    
+    # Semantic Risk Colors
+    RISK_HIGH = "#7D2D26"    # Dunkles Rot
+    RISK_MEDIUM = "#81530A"  # Bernstein/Gold
+    RISK_LOW = "#058168"     # Jade/Teal
+    
+    # Background Palette
+    BG_PRIMARY = "#1A1C24"
+    BG_SECONDARY = "#262624"
+    BG_TERTIARY = "#1E1F20"
+    
+    # Neutral Grays
+    GRAY_LIGHT = "#7c7c7c"
+    GRAY_DARK = "#404040"
+    
+    # Chart-specific Palettes
+    INVESTMENT_PALETTE = [
+        "#7C4937",  # Setup (Primary Brown)
+        "#DA7758",  # Operations (Terrakotta)
+        "#B85C3E",  # Mitigations (Medium)
+    ]
+    
+    REGION_PALETTE = [
+        "#7C4937",  # Asia-Pacific
+        "#DA7758",  # Europe
+        "#B85C3E",  # North America
+        "#9D6B55",  # Middle East
+    ]
+    
+    CATEGORY_PALETTE = [
+        "#7C4937", "#DA7758", "#B85C3E", 
+        "#9D6B55", "#C9886D", "#8F5944"
+    ]
+    
+    # Map Gradient (for choropleth)
+    MAP_GRADIENT = [
+        [0, '#1A3D2E'],      # Dark green (low risk)
+        [0.4, '#4A3A1A'],    # Dark yellow-brown
+        [0.7, '#7F5C2E'],    # Medium orange-brown
+        [1, '#7D2D26']       # Dark red (high risk)
+    ]
+    
+    @classmethod
+    def get_risk_color(cls, risk_level: str) -> str:
+        """Return color for risk level."""
+        mapping = {
+            'High': cls.RISK_HIGH,
+            'Medium': cls.RISK_MEDIUM,
+            'Low': cls.RISK_LOW
+        }
+        return mapping.get(risk_level, cls.GRAY_LIGHT)
+
+
+# ============================================================================
+# PAGE CONFIGURATION
+# ============================================================================
 st.set_page_config(
     page_title="Sky-Guard Dashboard",
     page_icon="✈️",
@@ -67,7 +123,7 @@ def render_sidebar(risk_data, roi_data):
     """Sidebar with professional navigation and key metrics."""
     
     with st.sidebar:
-        # Branding (Logo/Title Area)
+        # Branding
         st.markdown(
             """
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -84,10 +140,8 @@ def render_sidebar(risk_data, roi_data):
         st.markdown("---")
         st.markdown("### Navigation")
 
-        # Navigation with Icons (The Upgrade)
-        # Icons originate from Bootstrap Icons: https://icons.getbootstrap.com/
         page = option_menu(
-            menu_title=None,  # Hide title
+            menu_title=None,
             options=["Financial Performance", "Risk Analysis", "AI Recommendations", "Settings"],
             icons=["graph-up-arrow", "shield-exclamation", "cpu", "sliders"], 
             default_index=0,
@@ -100,14 +154,11 @@ def render_sidebar(risk_data, roi_data):
         )
         
         st.markdown("---")
-        
-        # KPI Section inside an expander or dedicated container for cleaner look
         st.markdown("### Quick Stats")
         
         roi_metrics = roi_data['roi_metrics']
         risk_summary = risk_data['summary']
         
-        # Using columns inside sidebar for compact metric view
         c1, c2 = st.columns(2)
         with c1:
             st.metric("ROI Ratio", f"{roi_metrics['roi_ratio']:.0f}:1")
@@ -116,14 +167,10 @@ def render_sidebar(risk_data, roi_data):
             st.metric("High-Risk Items", f"{risk_summary['risk_distribution']['high_risk']:,}")
 
         st.markdown("---")
-        
-        # System Status
         st.markdown("### System Status")
         st.success("Operational", icon=":material/check_circle:")
 
         st.markdown("---")
-        
-        # Subtle Footer
         st.markdown(
             """
             <div style="font-size: 0.75em; color: #888; text-align: center;">
@@ -138,7 +185,10 @@ def render_sidebar(risk_data, roi_data):
 
 
 def render_financial_performance(roi_data, risk_data):
-    """Page 1: Financial Performance."""
+    """
+    Page 1: Financial Performance
+    PHASE 1: Updated with harmonized color scheme
+    """
     
     st.title("Financial Performance")
     
@@ -189,7 +239,7 @@ def render_financial_performance(roi_data, risk_data):
     
     st.markdown("---")
     
-    # Charts
+    # Charts with harmonized colors
     col1, col2 = st.columns(2)
     
     with col1:
@@ -205,21 +255,31 @@ def render_financial_performance(roi_data, risk_data):
             ]
         })
         
+        # PHASE 1: Harmonized color palette
         fig = px.pie(
             inv_data,
             values='Amount',
             names='Category',
-            hole=0.6
+            hole=0.6,
+            color_discrete_sequence=ColorScheme.INVESTMENT_PALETTE
         )
         fig.update_traces(
             textposition='inside',
             textinfo='percent',
-            hovertemplate="<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>"
+            hovertemplate="<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>",
+            marker=dict(line=dict(color=ColorScheme.BG_PRIMARY, width=2))
         )
         fig.update_layout(
             showlegend=True,
             margin=dict(t=10, b=10, l=10, r=10),
-            height=350
+            height=350,
+            paper_bgcolor=ColorScheme.BG_SECONDARY,
+            plot_bgcolor=ColorScheme.BG_SECONDARY,
+            font=dict(color='white'),
+            legend=dict(
+                font=dict(color='white'),
+                bgcolor=ColorScheme.BG_TERTIARY
+            )
         )
         st.plotly_chart(fig, use_container_width=True)
     
@@ -236,15 +296,16 @@ def render_financial_performance(roi_data, risk_data):
             ]
         })
         
+        # PHASE 1: Semantic risk colors
         fig = px.bar(
             risk_dist,
             x='Risk Level',
             y='Components',
             color='Risk Level',
             color_discrete_map={
-                'High': "#7D2D26",
-                'Medium': "#81530A",
-                'Low': "#058168"
+                'High': ColorScheme.RISK_HIGH,
+                'Medium': ColorScheme.RISK_MEDIUM,
+                'Low': ColorScheme.RISK_LOW
             }
         )
         fig.update_layout(
@@ -252,7 +313,12 @@ def render_financial_performance(roi_data, risk_data):
             xaxis_title="",
             yaxis_title="Component Count",
             margin=dict(t=10, b=10, l=10, r=10),
-            height=350
+            height=350,
+            paper_bgcolor=ColorScheme.BG_SECONDARY,
+            plot_bgcolor=ColorScheme.BG_SECONDARY,
+            font=dict(color='white'),
+            xaxis=dict(gridcolor=ColorScheme.GRAY_DARK),
+            yaxis=dict(gridcolor=ColorScheme.GRAY_DARK)
         )
         st.plotly_chart(fig, use_container_width=True)
     
@@ -271,7 +337,10 @@ def render_financial_performance(roi_data, risk_data):
 
 
 def render_risk_analysis(risk_data, inventory_df):
-    """Page 2: Risk Analysis."""
+    """
+    Page 2: Risk Analysis
+    PHASE 1: Updated with harmonized color scheme
+    """
     
     st.title("Risk Analysis")
     
@@ -318,7 +387,6 @@ def render_risk_analysis(risk_data, inventory_df):
     st.subheader("Critical Components Requiring Action")
     
     top_risks_df = pd.DataFrame(risk_data['top_risks'])
-    
     top_risks_df['Exposure'] = top_risks_df['financial_exposure_usd'].apply(
         lambda x: f"${x/1e6:.1f}M"
     )
@@ -355,18 +423,31 @@ def render_risk_analysis(risk_data, inventory_df):
             columns=['Category', 'Count']
         ).sort_values('Count', ascending=True)
         
+        # PHASE 1: Harmonized color gradient
         fig = px.bar(
             category_data,
             y='Category',
             x='Count',
-            orientation='h'
+            orientation='h',
+            color='Count',
+            color_continuous_scale=[
+                [0, ColorScheme.SECONDARY],
+                [0.5, ColorScheme.PRIMARY],
+                [1, ColorScheme.RISK_HIGH]
+            ]
         )
         fig.update_layout(
             showlegend=False,
             xaxis_title="High-Risk Components",
             yaxis_title="",
             margin=dict(t=10, b=10, l=10, r=10),
-            height=350
+            height=350,
+            paper_bgcolor=ColorScheme.BG_SECONDARY,
+            plot_bgcolor=ColorScheme.BG_SECONDARY,
+            font=dict(color='white'),
+            xaxis=dict(gridcolor=ColorScheme.GRAY_DARK),
+            yaxis=dict(gridcolor=ColorScheme.GRAY_DARK),
+            coloraxis_showscale=False
         )
         st.plotly_chart(fig, use_container_width=True)
 
@@ -378,18 +459,31 @@ def render_risk_analysis(risk_data, inventory_df):
             columns=['Region', 'Count']
         ).sort_values('Count', ascending=True)
         
+        # PHASE 1: Harmonized color gradient
         fig = px.bar(
             region_data,
             y='Region',
             x='Count',
-            orientation='h'
+            orientation='h',
+            color='Count',
+            color_continuous_scale=[
+                [0, ColorScheme.SECONDARY],
+                [0.5, ColorScheme.PRIMARY],
+                [1, ColorScheme.RISK_HIGH]
+            ]
         )
         fig.update_layout(
             showlegend=False,
             xaxis_title="High-Risk Components",
             yaxis_title="",
             margin=dict(t=10, b=10, l=10, r=10),
-            height=350
+            height=350,
+            paper_bgcolor=ColorScheme.BG_SECONDARY,
+            plot_bgcolor=ColorScheme.BG_SECONDARY,
+            font=dict(color='white'),
+            xaxis=dict(gridcolor=ColorScheme.GRAY_DARK),
+            yaxis=dict(gridcolor=ColorScheme.GRAY_DARK),
+            coloraxis_showscale=False
         )
         st.plotly_chart(fig, use_container_width=True)
     
@@ -485,7 +579,7 @@ def render_ai_recommendations(recommendations_data):
         ai = rec['ai_analysis']
         
         with st.expander(
-            f"**{idx}. {component['part_number']}** – {component['category']} • "
+            f"**{idx}. {component['part_number']}** — {component['category']} • "
             f"${component['financial_exposure_usd']/1e6:.1f}M • "
             f"Confidence: {ai['confidence_level']}",
             expanded=(idx <= 2)
@@ -556,28 +650,20 @@ def render_settings():
 
 def render_global_risk_map(inventory_df):
     """
-    Interactive world map showing geographic risk distribution using real data.
-    
-    Now uses actual country_code from enriched inventory data instead of dummy data.
+    Interactive world map showing geographic risk distribution.
+    PHASE 1: Updated with harmonized color scheme
     """
     
-    # Filter to high-risk components only
     high_risk_df = inventory_df[inventory_df['risk_level'] == 'High'].copy()
     
-    # Check if country_code column exists
     if 'country_code' not in high_risk_df.columns:
-        raise ValueError("country_code column not found in inventory data. Please re-run detect_anomalies.py")
+        raise ValueError("country_code column not found in inventory data.")
     
-    # Aggregate risk counts by country
     country_risk_counts = high_risk_df.groupby('country_code').size().reset_index(name='risk_count')
-    
-    # Also get region information for hover tooltips
     country_regions = high_risk_df.groupby('country_code')['region'].first().reset_index()
-    
-    # Merge to get final data
     map_data = country_risk_counts.merge(country_regions, on='country_code', how='left')
     
-    # Create choropleth map
+    # PHASE 1: Harmonized map colors
     fig = px.choropleth(
         map_data,
         locations='country_code',
@@ -588,17 +674,11 @@ def render_global_risk_map(inventory_df):
             'country_code': True,
             'region': True
         },
-        color_continuous_scale=[
-            [0, '#1A3D2E'],      # Dark green (low risk)
-            [0.4, '#4A3A1A'],    # Dark yellow-brown
-            [0.7, '#7F5C2E'],    # Medium orange-brown
-            [1, '#7D2D26']       # Dark red (high risk)
-        ],
+        color_continuous_scale=ColorScheme.MAP_GRADIENT,
         labels={'risk_count': 'High-Risk Components'},
         projection='natural earth'
     )
     
-    # Update map styling
     fig.update_geos(
         showcoastlines=True,
         coastlinecolor='#444',
@@ -610,7 +690,6 @@ def render_global_risk_map(inventory_df):
         countrycolor='#333'
     )
     
-    # Update layout
     fig.update_layout(
         margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor='#262624',
@@ -618,7 +697,8 @@ def render_global_risk_map(inventory_df):
         height=450,
         coloraxis_colorbar=dict(
             title="Risk Level",
-            tickfont=dict(color='white')
+            tickfont=dict(color='white'),
+            bgcolor=ColorScheme.BG_TERTIARY
         )
     )
     
