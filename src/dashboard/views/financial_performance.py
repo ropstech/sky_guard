@@ -31,7 +31,7 @@ def render_financial_performance(roi_data: dict, risk_data: dict):
         risk_data: Risk analysis results
     """
     
-    st.title("Financial Performance NEW")
+    st.title("Financial Performance")
     
     roi_metrics = roi_data['roi_metrics']
     executive_summary = roi_data['executive_summary']

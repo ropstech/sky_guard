@@ -24,6 +24,7 @@ import streamlit as st
 
 # Import modular components
 from utils.data_loader import DashboardData
+from utils.animations import inject_custom_css
 from components.sidebar import render_sidebar
 from views.financial_performance import render_financial_performance
 from views.risk_analysis import render_risk_analysis
@@ -40,6 +41,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Inject custom CSS for animations
+inject_custom_css()
 
 
 def main():
