@@ -1,28 +1,28 @@
 {
   "summary": {
-    "analysis_timestamp": "2026-01-22 21:15:03",
+    "analysis_timestamp": "2026-01-24 12:05:50",
     "total_components_analyzed": 5000,
     "risk_distribution": {
-      "high_risk": 1509,
-      "medium_risk": 2678,
-      "low_risk": 813
+      "high_risk": 1686,
+      "medium_risk": 2498,
+      "low_risk": 816
     },
     "financial_metrics": {
-      "total_exposure_usd": 17159073061.0,
-      "avg_exposure_per_high_risk_component": 11371155.110006627
+      "total_exposure_usd": 19480306992.0,
+      "avg_exposure_per_high_risk_component": 11554155.985765124
     },
     "top_risk_categories": {
-      "Landing Gear": 300,
-      "Engine": 299,
-      "Electrical": 230,
-      "Avionics": 220,
-      "Hydraulics": 218
+      "Engine": 362,
+      "Landing Gear": 362,
+      "Electrical": 241,
+      "Avionics": 238,
+      "Hydraulics": 233
     },
     "top_risk_regions": {
-      "Middle East": 587,
-      "Asia-Pacific": 405,
-      "North America": 282,
-      "Europe": 235
+      "Middle East": 509,
+      "Asia-Pacific": 473,
+      "North America": 399,
+      "Europe": 305
     }
   },
   "top_risks": [
@@ -35,8 +35,8 @@
       "safety_stock": 25,
       "lead_time_days": 87.0,
       "supplier_id": "SUP-0118",
-      "region": "Middle East",
-      "risk_exposure": "High",
+      "region": "Europe",
+      "risk_exposure": "Medium",
       "composite_risk_score": 100.0,
       "risk_level": "High",
       "financial_exposure_usd": 30798957.0
@@ -50,8 +50,8 @@
       "safety_stock": 28,
       "lead_time_days": 89.0,
       "supplier_id": "SUP-0146",
-      "region": "Asia-Pacific",
-      "risk_exposure": "High",
+      "region": "North America",
+      "risk_exposure": "Medium",
       "composite_risk_score": 100.0,
       "risk_level": "High",
       "financial_exposure_usd": 30103004.0
@@ -65,11 +65,26 @@
       "safety_stock": 30,
       "lead_time_days": 88.0,
       "supplier_id": "SUP-0062",
-      "region": "Asia-Pacific",
-      "risk_exposure": "Medium",
-      "composite_risk_score": 66.0,
+      "region": "Middle East",
+      "risk_exposure": "High",
+      "composite_risk_score": 78.0,
       "risk_level": "High",
       "financial_exposure_usd": 29955288.0
+    },
+    {
+      "part_number": "PN-ENG-02565",
+      "description": "Engine Component - Series X",
+      "category": "Engine",
+      "criticality": "Critical",
+      "current_stock": 45,
+      "safety_stock": 30,
+      "lead_time_days": 87.0,
+      "supplier_id": "SUP-0144",
+      "region": "Middle East",
+      "risk_exposure": "High",
+      "composite_risk_score": 78.0,
+      "risk_level": "High",
+      "financial_exposure_usd": 29811246.0
     },
     {
       "part_number": "PN-LAN-04281",
@@ -80,7 +95,7 @@
       "safety_stock": 34,
       "lead_time_days": 88.0,
       "supplier_id": "SUP-0143",
-      "region": "Asia-Pacific",
+      "region": "Middle East",
       "risk_exposure": "High",
       "composite_risk_score": 100.0,
       "risk_level": "High",
@@ -95,9 +110,9 @@
       "safety_stock": 24,
       "lead_time_days": 85.0,
       "supplier_id": "SUP-0018",
-      "region": "Middle East",
-      "risk_exposure": "High",
-      "composite_risk_score": 78.0,
+      "region": "Asia-Pacific",
+      "risk_exposure": "Medium",
+      "composite_risk_score": 66.0,
       "risk_level": "High",
       "financial_exposure_usd": 29612385.0
     },
@@ -110,7 +125,7 @@
       "safety_stock": 22,
       "lead_time_days": 85.0,
       "supplier_id": "SUP-0035",
-      "region": "North America",
+      "region": "Asia-Pacific",
       "risk_exposure": "Medium",
       "composite_risk_score": 93.50000000000001,
       "risk_level": "High",
@@ -132,49 +147,34 @@
       "financial_exposure_usd": 29127375.0
     },
     {
-      "part_number": "PN-ENG-01561",
-      "description": "Engine Component - Series C",
-      "category": "Engine",
-      "criticality": "Critical",
-      "current_stock": 53,
-      "safety_stock": 36,
-      "lead_time_days": 87.0,
-      "supplier_id": "SUP-0008",
-      "region": "Asia-Pacific",
-      "risk_exposure": "Medium",
-      "composite_risk_score": 66.0,
-      "risk_level": "High",
-      "financial_exposure_usd": 28591245.0
-    },
-    {
-      "part_number": "PN-LAN-04228",
+      "part_number": "PN-LAN-00661",
       "description": "Landing Gear Component - Series X",
       "category": "Landing Gear",
       "criticality": "Critical",
-      "current_stock": 54,
-      "safety_stock": 34,
-      "lead_time_days": 88.0,
-      "supplier_id": "SUP-0083",
-      "region": "Middle East",
-      "risk_exposure": "High",
-      "composite_risk_score": 78.0,
+      "current_stock": 51,
+      "safety_stock": 28,
+      "lead_time_days": 87.0,
+      "supplier_id": "SUP-0054",
+      "region": "North America",
+      "risk_exposure": "Medium",
+      "composite_risk_score": 66.0,
       "risk_level": "High",
-      "financial_exposure_usd": 28587504.0
+      "financial_exposure_usd": 28697646.0
     },
     {
-      "part_number": "PN-LAN-02725",
-      "description": "Landing Gear Component - Series A",
-      "category": "Landing Gear",
+      "part_number": "PN-ENG-04786",
+      "description": "Engine Component - Series A",
+      "category": "Engine",
       "criticality": "Critical",
-      "current_stock": 15,
-      "safety_stock": 18,
-      "lead_time_days": 80.0,
-      "supplier_id": "SUP-0016",
-      "region": "Middle East",
-      "risk_exposure": "High",
-      "composite_risk_score": 100.0,
+      "current_stock": 39,
+      "safety_stock": 25,
+      "lead_time_days": 82.0,
+      "supplier_id": "SUP-0063",
+      "region": "North America",
+      "risk_exposure": "Medium",
+      "composite_risk_score": 66.0,
       "risk_level": "High",
-      "financial_exposure_usd": 28277840.0
+      "financial_exposure_usd": 28676958.0
     }
   ]
 }

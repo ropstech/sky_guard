@@ -1,44 +1,44 @@
 {
   "analysis_metadata": {
-    "calculation_date": "2026-01-22 21:20:16",
+    "calculation_date": "2026-01-24 12:06:32",
     "analysis_scope": "5 components analyzed"
   },
   "investment_breakdown": {
     "one_time_setup": 50000,
     "annual_operating_costs": 120000,
-    "mitigation_action_costs": 2883658,
-    "total_first_year_investment": 3053658
+    "mitigation_action_costs": 4198658,
+    "total_first_year_investment": 4368658
   },
   "aog_cost_avoidance": {
-    "total_risk_exposure": 17159073061.0,
-    "high_risk_components": 1509,
-    "baseline_expected_aog_cost": 1372725844.88,
-    "with_skyguard_expected_aog_cost": 343181461.22,
-    "aog_costs_avoided": 1029544383.6600001,
+    "total_risk_exposure": 19480306992.0,
+    "high_risk_components": 1686,
+    "baseline_expected_aog_cost": 1558424559.3600001,
+    "with_skyguard_expected_aog_cost": 389606139.84000003,
+    "aog_costs_avoided": 1168818419.52,
     "risk_reduction_percentage": 75.0
   },
   "roi_metrics": {
-    "total_investment_usd": 3053658,
-    "total_savings_usd": 1029544383.6600001,
-    "net_benefit_usd": 1026490725.6600001,
-    "roi_ratio": 337.15117529860913,
-    "roi_percentage": 33615.117529860916,
-    "payback_period_months": 0.03559234218706728,
-    "break_even_date": "2026-01-23"
+    "total_investment_usd": 4368658,
+    "total_savings_usd": 1168818419.52,
+    "net_benefit_usd": 1164449761.52,
+    "roi_ratio": 267.5463310517784,
+    "roi_percentage": 26654.63310517784,
+    "payback_period_months": 0.044852044701288146,
+    "break_even_date": "2026-01-25"
   },
   "executive_summary": {
-    "value_proposition": "Sky-Guard prevents $1,029,544,384 in AOG costs with $3,053,658 investment, delivering 337.2:1 return.",
+    "value_proposition": "Sky-Guard prevents $1,168,818,420 in AOG costs with $4,368,658 investment, delivering 267.5:1 return.",
     "key_metrics": {
-      "investment_required": 3053658,
-      "aog_costs_avoided": 1029544383.6600001,
-      "net_benefit": 1026490725.6600001,
-      "roi_ratio": 337.15117529860913,
-      "payback_period_months": 0.03559234218706728
+      "investment_required": 4368658,
+      "aog_costs_avoided": 1168818419.52,
+      "net_benefit": 1164449761.52,
+      "roi_ratio": 267.5463310517784,
+      "payback_period_months": 0.044852044701288146
     },
     "risk_impact": {
-      "high_risk_components_identified": 1509,
+      "high_risk_components_identified": 1686,
       "risk_reduction_percentage": 75.0,
-      "total_exposure_managed": 17159073061.0
+      "total_exposure_managed": 19480306992.0
     },
     "recommendation": "STRONG RECOMMEND: Exceptional ROI justifies immediate implementation."
   }
