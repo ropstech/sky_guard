@@ -278,7 +278,7 @@ def _render_global_risk_map(inventory_df: pd.DataFrame):
         },
         color_continuous_scale=ColorScheme.MAP_GRADIENT,
         labels={'risk_count': 'High-Risk Components'},
-        projection='natural earth'
+        projection='orthographic'
     )
     
     # Update map styling
