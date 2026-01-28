@@ -39,7 +39,7 @@ def render_financial_performance(roi_data: dict, risk_data: dict):
     # ========================================================================
     # VALUE PROPOSITION BANNER
     # ========================================================================
-    st.info(
+    st.success(
         f"**{executive_summary['value_proposition']}**", 
         icon=":material/celebration:"
     )
@@ -186,8 +186,8 @@ def render_financial_performance(roi_data: dict, risk_data: dict):
     recommendation = executive_summary['recommendation']
     
     if "STRONG RECOMMEND" in recommendation:
-        st.success(f"{recommendation}", icon=":material/check:")
+        st.info(f"{recommendation}", icon=":material/check:")
     elif "RECOMMEND" in recommendation:
-        st.info(f"ℹ️ {recommendation}")
+        st.info(f"{recommendation}")
     else:
         st.warning(f"⚠️ {recommendation}")

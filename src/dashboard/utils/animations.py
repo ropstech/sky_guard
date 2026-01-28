@@ -106,7 +106,7 @@ def inject_custom_css():
     
     /* Info/Success/Warning box animations */
     .stAlert {
-        animation: slideIn 0.4s ease-out;
+        animation: slideIn 1.0s ease-out;
     }
     
     @keyframes slideIn {
