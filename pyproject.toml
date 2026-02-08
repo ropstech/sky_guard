@@ -20,4 +20,4 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*", "config*"]
+include = ["src*", "config*", "pipeline*"]

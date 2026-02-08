@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "model_used": "xiaomi/mimo-v2-flash:free",
+    "model_used": "tngtech/deepseek-r1t2-chimera:free",
     "total_recommendations": 5,
     "risk_summary": {
-      "analysis_timestamp": "2026-01-24 12:05:50",
+      "analysis_timestamp": "2026-01-29 10:18:28",
       "total_components_analyzed": 5000,
       "risk_distribution": {
         "high_risk": 1686,
@@ -38,40 +38,33 @@
         "financial_exposure_usd": 30798957.0
       },
       "ai_analysis": {
-        "root_cause": "Critical component with safety stock at 28% of required level (7 vs 25 units) and 87-day lead time from European supplier with medium risk. AOG exposure of $30.8M creates unacceptable operational risk.",
+        "root_cause": "Current stock (7 units) is critically below safety stock (25 units) with long lead time (87 days) and medium supplier risk, creating high AOG exposure.",
         "mitigation_options": [
           {
             "option": "Emergency Air Freight Order",
-            "description": "Expedite order via air freight to reduce lead time from 87 to 15 days, ensuring immediate safety stock replenishment",
-            "estimated_cost_usd": 150000,
-            "implementation_time_days": 15,
-            "risk_reduction_pct": 85
-          },
-          {
-            "option": "Dual-Source Qualification",
-            "description": "Qualify alternate supplier in North America with 45-day lead time and lower geopolitical risk",
+            "description": "Expedite replenishment via air freight to reduce lead time by 50-70%.",
             "estimated_cost_usd": 250000,
-            "implementation_time_days": 90,
+            "implementation_time_days": 30,
             "risk_reduction_pct": 70
           },
           {
-            "option": "Safety Stock Increase",
-            "description": "Increase safety stock to 40 units (60% buffer) to cover extended lead times and demand variability",
-            "estimated_cost_usd": 450000,
-            "implementation_time_days": 87,
-            "risk_reduction_pct": 65
+            "option": "Alternate Supplier Qualification",
+            "description": "Fast-track certification of pre-vetted North American supplier to diversify sourcing.",
+            "estimated_cost_usd": 500000,
+            "implementation_time_days": 60,
+            "risk_reduction_pct": 90
           },
           {
-            "option": "Consignment Agreement",
-            "description": "Negotiate consignment stock agreement with current supplier for 30 units held at regional hub",
-            "estimated_cost_usd": 75000,
-            "implementation_time_days": 45,
-            "risk_reduction_pct": 60
+            "option": "Safety Stock Adjustment",
+            "description": "Increase safety stock to 35 units with buffer for lead time variability.",
+            "estimated_cost_usd": 1800000,
+            "implementation_time_days": 87,
+            "risk_reduction_pct": 85
           }
         ],
-        "recommended_action": "Execute Emergency Air Freight Order immediately to address critical stockout risk, then initiate Dual-Source Qualification for long-term resilience. This two-phase approach reduces immediate AOG exposure by 85% within 15 days while building sustainable supply chain redundancy.",
+        "recommended_action": "Combine emergency air freight (immediate gap coverage) with alternate supplier qualification (long-term resilience). Safety stock adjustment should follow after lead time reduction.",
         "confidence_level": "High",
-        "expected_roi": "Avoided AOG cost of $26.2M (85% of $30.8M exposure) vs. $150K emergency investment = 17,367% ROI"
+        "expected_roi": "$28M saved vs. $750k investment (emergency + qualification costs) = 37:1 ROI"
       }
     },
     {
@@ -82,40 +75,33 @@
         "financial_exposure_usd": 30103004.0
       },
       "ai_analysis": {
-        "root_cause": "Critical engine component with negative stock (-1) against safety stock of 28 units, indicating a stockout situation. The 89-day lead time from North America creates a significant supply gap, compounded by medium supplier risk and maximum risk score (100/100), exposing the organization to $30.1M AOG cost exposure.",
+        "root_cause": "Critical component faces stockout due to negative current inventory (-1 units), insufficient safety stock coverage for 89-day lead time, and medium supplier risk in a single-source region.",
         "mitigation_options": [
           {
             "option": "Emergency Air Freight Order",
-            "description": "Place immediate order with expedited air freight from North American supplier to reduce lead time from 89 to 15 days",
-            "estimated_cost_usd": 450000,
-            "implementation_time_days": 15,
-            "risk_reduction_pct": 85
+            "description": "Expedite next shipment via air freight with premium logistics",
+            "estimated_cost_usd": 150000,
+            "implementation_time_days": 7,
+            "risk_reduction_pct": 80
           },
           {
             "option": "Alternate Supplier Qualification",
-            "description": "Qualify and source from secondary supplier in Europe/Asia with faster lead times (45 days) and diversify supply base",
-            "estimated_cost_usd": 120000,
+            "description": "Fast-track certification for European backup supplier with 60-day lead time",
+            "estimated_cost_usd": 250000,
             "implementation_time_days": 45,
             "risk_reduction_pct": 70
           },
           {
-            "option": "Safety Stock Increase & Buffer",
-            "description": "Increase safety stock from 28 to 50 units and establish consignment stock agreement with supplier",
-            "estimated_cost_usd": 650000,
-            "implementation_time_days": 90,
+            "option": "Safety Stock Adjustment",
+            "description": "Increase safety stock to 45 units (+60%) to cover lead time variability",
+            "estimated_cost_usd": 850000,
+            "implementation_time_days": 89,
             "risk_reduction_pct": 90
-          },
-          {
-            "option": "Component Pooling Agreement",
-            "description": "Establish component pooling/sharing agreement with other MROs or airlines for emergency coverage",
-            "estimated_cost_usd": 75000,
-            "implementation_time_days": 30,
-            "risk_reduction_pct": 60
           }
         ],
-        "recommended_action": "Execute Emergency Air Freight Order (Option 1) immediately to restore stock within 15 days, while simultaneously initiating Alternate Supplier Qualification (Option 2) for long-term risk mitigation. This dual approach addresses immediate AOG exposure ($30.1M) while building resilience. The $450K emergency cost is justified against potential $30M+ AOG losses.",
+        "recommended_action": "Implement Emergency Air Freight Order immediately while initiating Alternate Supplier Qualification for long-term resilience. The $150k expedite cost is 0.5% of AOG exposure risk.",
         "confidence_level": "High",
-        "expected_roi": "Emergency order ROI: 66:1 ($30.1M AOG cost avoidance vs $450K investment). Combined strategy ROI: 45:1 when including long-term supplier diversification benefits."
+        "expected_roi": "$30.1M risk mitigation vs $400k total investment (1:75 ROI)"
       }
     },
     {
@@ -126,40 +112,33 @@
         "financial_exposure_usd": 29955288.0
       },
       "ai_analysis": {
-        "root_cause": "Critical component with high supplier risk (Middle East region) and long lead time (88 days) creates vulnerability to supply chain disruptions. Current stock (45 units) is only 1.5x safety stock, leaving minimal buffer against demand spikes or supplier delays. The $29.9M AOG cost exposure indicates severe operational impact if stockout occurs.",
+        "root_cause": "High supplier risk in the Middle East combined with long lead times (88 days) creates vulnerability to supply disruptions, exacerbated by critical part status and high AOG exposure.",
         "mitigation_options": [
           {
-            "option": "Strategic Inventory Increase",
-            "description": "Increase safety stock from 30 to 60 units (2x current) to cover 176 days of demand, providing buffer against 88-day lead time disruptions",
-            "estimated_cost_usd": 898658,
-            "implementation_time_days": 14,
-            "risk_reduction_pct": 45
+            "option": "Emergency Order",
+            "description": "Place expedited order to build buffer stock above safety levels",
+            "estimated_cost_usd": 1500000,
+            "implementation_time_days": 30,
+            "risk_reduction_pct": 40
           },
           {
-            "option": "Dual-Source Qualification",
-            "description": "Qualify alternate supplier from lower-risk region (e.g., North America or Europe) to reduce geographic concentration risk",
-            "estimated_cost_usd": 150000,
-            "implementation_time_days": 90,
-            "risk_reduction_pct": 60
+            "option": "Alternate Supplier Development",
+            "description": "Qualify secondary supplier from lower-risk region",
+            "estimated_cost_usd": 850000,
+            "implementation_time_days": 120,
+            "risk_reduction_pct": 70
           },
           {
-            "option": "Emergency Buffer Stock",
-            "description": "Place emergency order for 25 additional units with expedited shipping to immediately boost stock to 70 units",
-            "estimated_cost_usd": 1123323,
-            "implementation_time_days": 21,
+            "option": "Inventory Adjustment",
+            "description": "Increase safety stock to 50 units (+66%) to cover extended lead time variability",
+            "estimated_cost_usd": 600000,
+            "implementation_time_days": 7,
             "risk_reduction_pct": 35
-          },
-          {
-            "option": "Supplier Risk Mitigation Program",
-            "description": "Work with current supplier to establish consignment stock, improve forecasting collaboration, and develop contingency plans",
-            "estimated_cost_usd": 75000,
-            "implementation_time_days": 45,
-            "risk_reduction_pct": 25
           }
         ],
-        "recommended_action": "Implement Strategic Inventory Increase (Option 1) combined with Supplier Risk Mitigation Program (Option 4). This provides immediate risk reduction (70% combined) at moderate cost ($973,658) while maintaining supplier relationship. The inventory increase addresses the critical stock-to-lead-time gap, while the mitigation program reduces supplier-specific risks without the 90-day delay of dual sourcing.",
-        "confidence_level": "High",
-        "expected_roi": "Investment of $973,658 vs. $29.9M AOG exposure = 30:1 return. Risk reduction of 70% on critical component protects revenue and operational continuity."
+        "recommended_action": "Implement Inventory Adjustment immediately while initiating Alternate Supplier Development for long-term resilience. The 7-day implementation provides immediate risk coverage while addressing root cause through supplier diversification.",
+        "confidence_level": "Medium",
+        "expected_roi": "$28.3M savings vs. $1.45M total investment (emergency + inventory costs). AOG exposure reduction justifies 19:1 ROI."
       }
     },
     {
@@ -170,40 +149,33 @@
         "financial_exposure_usd": 29811246.0
       },
       "ai_analysis": {
-        "root_cause": "The component is at risk due to a critically low safety stock buffer (15 units) relative to a long lead time (87 days) and high supplier risk (Middle East region). The current stock of 45 units provides insufficient coverage for potential demand spikes or supply disruptions, creating a high AOG exposure ($29.8M).",
+        "root_cause": "High supplier risk in Middle East region combined with long lead times creates supply chain vulnerability, exacerbated by critical part status and high AOG exposure.",
         "mitigation_options": [
           {
-            "option": "Emergency Safety Stock Build",
-            "description": "Place an expedited order for 20-30 units to increase stock to 65-75 units, providing a 6-month buffer against the 87-day lead time.",
+            "option": "Inventory Buffer Increase",
+            "description": "Increase safety stock from 30 to 60 units to cover lead time variability",
+            "estimated_cost_usd": 2250000,
+            "implementation_time_days": 7,
+            "risk_reduction_pct": 40
+          },
+          {
+            "option": "Dual-Sourcing Strategy",
+            "description": "Qualify alternate supplier from stable region (e.g., North America) while maintaining current supplier",
+            "estimated_cost_usd": 850000,
+            "implementation_time_days": 120,
+            "risk_reduction_pct": 70
+          },
+          {
+            "option": "Emergency Stock Agreement",
+            "description": "Negotiate consignment stock or priority production slot with current supplier",
             "estimated_cost_usd": 1500000,
             "implementation_time_days": 30,
-            "risk_reduction_pct": 60
-          },
-          {
-            "option": "Qualify Alternate Supplier",
-            "description": "Initiate qualification process for a secondary supplier in a lower-risk region (e.g., North America or Europe) to diversify supply base.",
-            "estimated_cost_usd": 250000,
-            "implementation_time_days": 120,
-            "risk_reduction_pct": 75
-          },
-          {
-            "option": "Increase Safety Stock Level",
-            "description": "Permanently increase safety stock from 30 to 60 units to cover 2x lead time demand, reducing stockout probability.",
-            "estimated_cost_usd": 1800000,
-            "implementation_time_days": 45,
-            "risk_reduction_pct": 55
-          },
-          {
-            "option": "Dual-Source Strategy",
-            "description": "Split future orders 50/50 between current supplier and a new alternate supplier to reduce single-source dependency.",
-            "estimated_cost_usd": 500000,
-            "implementation_time_days": 90,
-            "risk_reduction_pct": 70
+            "risk_reduction_pct": 50
           }
         ],
-        "recommended_action": "Execute Emergency Safety Stock Build (Option 1) immediately to address the immediate risk, while concurrently initiating Qualify Alternate Supplier (Option 2) for long-term risk mitigation. The emergency build provides the fastest risk reduction given the $29.8M AOG exposure and high supplier risk.",
-        "confidence_level": "High",
-        "expected_roi": "Prevention of $29.8M AOG exposure for $1.5M investment = 19.9x ROI"
+        "recommended_action": "Implement Dual-Sourcing Strategy with temporary Inventory Buffer Increase during supplier qualification period. This addresses root cause while providing immediate risk reduction.",
+        "confidence_level": "Medium",
+        "expected_roi": "Potential $18-25M AOG cost avoidance vs. $3.1M investment (400-700% ROI) within 18 months"
       }
     },
     {
@@ -214,40 +186,33 @@
         "financial_exposure_usd": 29773656.0
       },
       "ai_analysis": {
-        "root_cause": "Critical component with zero buffer (stock equals safety stock) and high supplier risk from Middle East region with 88-day lead time. Any supply disruption would immediately trigger AOG exposure of $29.8M.",
+        "root_cause": "High-risk single-source supplier with extended lead time (88 days) in a geopolitically volatile region, creating vulnerability to supply disruptions despite safety stock matching current inventory.",
         "mitigation_options": [
           {
-            "option": "Emergency Safety Stock Build",
-            "description": "Immediately place emergency order for 20 additional units to create buffer stock, reducing stock-out probability from 50% to <5%",
-            "estimated_cost_usd": 1200000,
+            "option": "Emergency Air Freight Order",
+            "description": "Place expedited order with current supplier using air freight to reduce lead time",
+            "estimated_cost_usd": 500000,
             "implementation_time_days": 14,
-            "risk_reduction_pct": 85
+            "risk_reduction_pct": 30
           },
           {
-            "option": "Dual-Source Qualification",
-            "description": "Qualify alternate supplier in lower-risk region (e.g., North America or Europe) for 30% of volume, maintaining primary supplier for cost",
-            "estimated_cost_usd": 350000,
-            "implementation_time_days": 90,
-            "risk_reduction_pct": 60
+            "option": "Alternate Supplier Qualification",
+            "description": "Accelerate certification of secondary supplier in stable region (e.g., North America)",
+            "estimated_cost_usd": 1500000,
+            "implementation_time_days": 120,
+            "risk_reduction_pct": 70
           },
           {
-            "option": "Consignment Stock Agreement",
-            "description": "Negotiate consignment stock with current supplier - they hold 15 units at your facility, pay only when consumed",
-            "estimated_cost_usd": 75000,
-            "implementation_time_days": 30,
-            "risk_reduction_pct": 45
-          },
-          {
-            "option": "Forward Buy with Air Freight",
-            "description": "Place 6-month forward order with air freight guarantee for 25 units, reducing lead time to 7 days",
-            "estimated_cost_usd": 1800000,
+            "option": "Safety Stock Increase",
+            "description": "Increase inventory buffer by 50% (add 17 units) to cover extended disruption scenarios",
+            "estimated_cost_usd": 1200000,
             "implementation_time_days": 7,
-            "risk_reduction_pct": 90
+            "risk_reduction_pct": 60
           }
         ],
-        "recommended_action": "Emergency Safety Stock Build - This provides immediate risk reduction (85%) within 14 days at moderate cost. The $1.2M investment is justified against $29.8M AOG exposure, representing 4% of potential loss. This buys time to implement longer-term solutions like dual-sourcing.",
+        "recommended_action": "Implement Alternate Supplier Qualification while placing emergency air order as interim solution. Dual-sourcing strategy addresses root cause of single-point failure while maintaining operations.",
         "confidence_level": "High",
-        "expected_roi": "2380% (Avoided AOG cost $29.8M - Investment $1.2M) / Investment $1.2M"
+        "expected_roi": "$28.2M potential AOG cost avoidance vs $2M investment (14:1 ROI)"
       }
     }
   ]

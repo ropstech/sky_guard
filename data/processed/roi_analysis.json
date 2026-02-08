@@ -1,13 +1,13 @@
 {
   "analysis_metadata": {
-    "calculation_date": "2026-01-24 12:06:32",
+    "calculation_date": "2026-01-29 10:20:11",
     "analysis_scope": "5 components analyzed"
   },
   "investment_breakdown": {
     "one_time_setup": 50000,
     "annual_operating_costs": 120000,
-    "mitigation_action_costs": 4198658,
-    "total_first_year_investment": 4368658
+    "mitigation_action_costs": 4650000,
+    "total_first_year_investment": 4820000
   },
   "aog_cost_avoidance": {
     "total_risk_exposure": 19480306992.0,
@@ -18,22 +18,22 @@
     "risk_reduction_percentage": 75.0
   },
   "roi_metrics": {
-    "total_investment_usd": 4368658,
+    "total_investment_usd": 4820000,
     "total_savings_usd": 1168818419.52,
-    "net_benefit_usd": 1164449761.52,
-    "roi_ratio": 267.5463310517784,
-    "roi_percentage": 26654.63310517784,
-    "payback_period_months": 0.044852044701288146,
-    "break_even_date": "2026-01-25"
+    "net_benefit_usd": 1163998419.52,
+    "roi_ratio": 242.49344803319502,
+    "roi_percentage": 24149.3448033195,
+    "payback_period_months": 0.049485873112568864,
+    "break_even_date": "2026-01-30"
   },
   "executive_summary": {
-    "value_proposition": "Sky-Guard prevents $1,168,818,420 in AOG costs with $4,368,658 investment, delivering 267.5:1 return.",
+    "value_proposition": "Sky-Guard prevents $1,168,818,420 in AOG costs with $4,820,000 investment, delivering 242.5:1 return.",
     "key_metrics": {
-      "investment_required": 4368658,
+      "investment_required": 4820000,
       "aog_costs_avoided": 1168818419.52,
-      "net_benefit": 1164449761.52,
-      "roi_ratio": 267.5463310517784,
-      "payback_period_months": 0.044852044701288146
+      "net_benefit": 1163998419.52,
+      "roi_ratio": 242.49344803319502,
+      "payback_period_months": 0.049485873112568864
     },
     "risk_impact": {
       "high_risk_components_identified": 1686,
